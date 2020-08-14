@@ -2,28 +2,28 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>https://zto_express.gitee.io/pages/404.html</loc>
+    <loc>https://zto_express.gitee.io/404.html</loc>
     
     <lastmod>2020-08-14</lastmod>
     
   </url>
   
   <url>
-    <loc>https://zto_express.gitee.io/pages/search/index.html</loc>
+    <loc>https://zto_express.gitee.io/search/index.html</loc>
     
     <lastmod>2020-08-14</lastmod>
     
   </url>
   
   <url>
-    <loc>https://zto_express.gitee.io/pages/about/index.html</loc>
+    <loc>https://zto_express.gitee.io/about/index.html</loc>
     
     <lastmod>2020-08-14</lastmod>
     
   </url>
   
   <url>
-    <loc>https://zto_express.gitee.io/pages/2020/08/14/hello-world/</loc>
+    <loc>https://zto_express.gitee.io/2020/08/14/hello-world/</loc>
     
     <lastmod>2020-08-14</lastmod>
     
@@ -31,7 +31,7 @@
   
 
   <url>
-    <loc>https://zto_express.gitee.io/pages</loc>
+    <loc>https://zto_express.gitee.io/</loc>
     <lastmod>2020-08-14</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>

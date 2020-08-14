@@ -3,11 +3,11 @@
   <title>中通技术团队</title>
   
   <subtitle>中通技术团队</subtitle>
-  <link href="https://zto_express.gitee.io/pages/atom.xml" rel="self"/>
+  <link href="https://zto_express.gitee.io/atom.xml" rel="self"/>
   
-  <link href="https://zto_express.gitee.io/pages/"/>
+  <link href="https://zto_express.gitee.io/"/>
   <updated>2020-08-14T12:55:14.012Z</updated>
-  <id>https://zto_express.gitee.io/pages/</id>
+  <id>https://zto_express.gitee.io/</id>
   
   <author>
     <name>[object Object]</name>
@@ -18,8 +18,8 @@
   
   <entry>
     <title>Hello World</title>
-    <link href="https://zto_express.gitee.io/pages/2020/08/14/hello-world/"/>
-    <id>https://zto_express.gitee.io/pages/2020/08/14/hello-world/</id>
+    <link href="https://zto_express.gitee.io/2020/08/14/hello-world/"/>
+    <id>https://zto_express.gitee.io/2020/08/14/hello-world/</id>
     <published>2020-08-14T12:55:14.012Z</published>
     <updated>2020-08-14T12:55:14.012Z</updated>
     
