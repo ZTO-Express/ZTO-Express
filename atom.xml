@@ -3,11 +3,11 @@
   <title>中通技术团队</title>
   
   <subtitle>中通技术团队</subtitle>
-  <link href="https://zto_express.gitee.io/atom.xml" rel="self"/>
+  <link href="https://ztogroup.github.io/atom.xml" rel="self"/>
   
-  <link href="https://zto_express.gitee.io/"/>
+  <link href="https://ztogroup.github.io/"/>
   <updated>2020-08-15T03:37:03.132Z</updated>
-  <id>https://zto_express.gitee.io/</id>
+  <id>https://ztogroup.github.io/</id>
   
   <author>
     <name>[object Object]</name>
@@ -18,8 +18,8 @@
   
   <entry>
     <title>中通Elasticsearch集群运维实践（二）--监控告警</title>
-    <link href="https://zto_express.gitee.io/2020/08/15/es/"/>
-    <id>https://zto_express.gitee.io/2020/08/15/es/</id>
+    <link href="https://ztogroup.github.io/2020/08/15/es/"/>
+    <id>https://ztogroup.github.io/2020/08/15/es/</id>
     <published>2020-08-15T02:32:54.000Z</published>
     <updated>2020-08-15T03:37:03.132Z</updated>
     
@@ -34,24 +34,24 @@
     
     
     
-    <category term="ES" scheme="https://zto_express.gitee.io/tags/ES/"/>
+    <category term="ES" scheme="https://ztogroup.github.io/tags/ES/"/>
     
-    <category term="搜索" scheme="https://zto_express.gitee.io/tags/%E6%90%9C%E7%B4%A2/"/>
+    <category term="搜索" scheme="https://ztogroup.github.io/tags/%E6%90%9C%E7%B4%A2/"/>
     
-    <category term="运维" scheme="https://zto_express.gitee.io/tags/%E8%BF%90%E7%BB%B4/"/>
+    <category term="运维" scheme="https://ztogroup.github.io/tags/%E8%BF%90%E7%BB%B4/"/>
     
-    <category term="平台" scheme="https://zto_express.gitee.io/tags/%E5%B9%B3%E5%8F%B0/"/>
+    <category term="平台" scheme="https://ztogroup.github.io/tags/%E5%B9%B3%E5%8F%B0/"/>
     
-    <category term="集群" scheme="https://zto_express.gitee.io/tags/%E9%9B%86%E7%BE%A4/"/>
+    <category term="集群" scheme="https://ztogroup.github.io/tags/%E9%9B%86%E7%BE%A4/"/>
     
-    <category term="监控" scheme="https://zto_express.gitee.io/tags/%E7%9B%91%E6%8E%A7/"/>
+    <category term="监控" scheme="https://ztogroup.github.io/tags/%E7%9B%91%E6%8E%A7/"/>
     
   </entry>
   
   <entry>
     <title>中通消息服务运维平台实践（已开源）</title>
-    <link href="https://zto_express.gitee.io/2020/08/15/zms/"/>
-    <id>https://zto_express.gitee.io/2020/08/15/zms/</id>
+    <link href="https://ztogroup.github.io/2020/08/15/zms/"/>
+    <id>https://ztogroup.github.io/2020/08/15/zms/</id>
     <published>2020-08-14T16:28:50.000Z</published>
     <updated>2020-08-15T03:36:53.906Z</updated>
     
@@ -66,15 +66,15 @@
     
     
     
-    <category term="中通" scheme="https://zto_express.gitee.io/tags/%E4%B8%AD%E9%80%9A/"/>
+    <category term="中通" scheme="https://ztogroup.github.io/tags/%E4%B8%AD%E9%80%9A/"/>
     
-    <category term="消息" scheme="https://zto_express.gitee.io/tags/%E6%B6%88%E6%81%AF/"/>
+    <category term="消息" scheme="https://ztogroup.github.io/tags/%E6%B6%88%E6%81%AF/"/>
     
-    <category term="MQ" scheme="https://zto_express.gitee.io/tags/MQ/"/>
+    <category term="MQ" scheme="https://ztogroup.github.io/tags/MQ/"/>
     
-    <category term="RocketMQ" scheme="https://zto_express.gitee.io/tags/RocketMQ/"/>
+    <category term="RocketMQ" scheme="https://ztogroup.github.io/tags/RocketMQ/"/>
     
-    <category term="Kafka" scheme="https://zto_express.gitee.io/tags/Kafka/"/>
+    <category term="Kafka" scheme="https://ztogroup.github.io/tags/Kafka/"/>
     
   </entry>
   
