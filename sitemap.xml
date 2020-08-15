@@ -2,14 +2,14 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>https://zto_express.gitee.io/2020/08/15/zms/</loc>
+    <loc>https://zto_express.gitee.io/2020/08/15/es/</loc>
     
     <lastmod>2020-08-15</lastmod>
     
   </url>
   
   <url>
-    <loc>https://zto_express.gitee.io/2020/08/15/es/</loc>
+    <loc>https://zto_express.gitee.io/2020/08/15/zms/</loc>
     
     <lastmod>2020-08-15</lastmod>
     
@@ -82,13 +82,6 @@
   
   <url>
     <loc>https://zto_express.gitee.io/tags/%E7%9B%91%E6%8E%A7/</loc>
-    <lastmod>2020-08-15</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://zto_express.gitee.io/tags/ElasticSearch/</loc>
     <lastmod>2020-08-15</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
