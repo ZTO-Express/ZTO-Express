@@ -6,7 +6,7 @@
   <link href="https://zto-express.github.io/atom.xml" rel="self"/>
   
   <link href="https://zto-express.github.io/"/>
-  <updated>2020-08-16T07:13:48.516Z</updated>
+  <updated>2020-08-16T08:02:07.340Z</updated>
   <id>https://zto-express.github.io/</id>
   
   <author>
@@ -21,7 +21,7 @@
     <link href="https://zto-express.github.io/2020/08/15/elasticsearch/"/>
     <id>https://zto-express.github.io/2020/08/15/elasticsearch/</id>
     <published>2020-08-15T02:32:54.000Z</published>
-    <updated>2020-08-16T07:13:48.516Z</updated>
+    <updated>2020-08-16T08:02:07.340Z</updated>
     
     <content type="html"><![CDATA[<p><strong>背景</strong><br>中通在2015年的时候已经开始预研并在生产环境使用Elasticsearch集群，发展到现在，线上已经有几十套ES集群，集群规模小到个位数的节点，大到上百个节点，依靠原来的纯人工的方式来做维护监控操作，已经难以为继，且容易出错，亟需一套系统来简化整个运维流程，统一监控，实时告警以及索引管理。</p><p><strong>问题</strong><br><strong>分布式集群维护困难：</strong> 搭建、集群节点间配置同步、日常维护（节点启停、服务启停、状态查看） <strong>升级风险大：</strong> 升级过程中、升级过程后、数据量大、持续时间长、影响范围大、业务影响大 <strong>故障定位复杂：</strong> 大量服务状态需要检查、日志信息四散分布 <strong>故障恢复代价高：</strong> 重新搭建故障节点或模块、重新恢复耗时、费力</p><p><strong>目标</strong><br><strong>稳定：</strong> 集群内不存在单点、数据保持完全同步（数据、配置、程序等） <strong>高效：</strong> 自动化部署、升级、恢复，快速故障定位（状态查看、日志定位） <strong>安全：</strong> 避免各个节点人工修改风险，验证后再发布到集群其他节点（灰度发布） <strong>简单：</strong> 不依赖于过多的外部资源，使用成熟工具避免引入外部故障 <strong>灵活：</strong> 适用于多种分布式、非分布式软件，易于扩展，易于与其他产品结合<br><strong>架构</strong><br>基于现状问题，我们自研了一套ES的运维管理平台，经过调研，自动化运维工具决定采用Ansible，开发语言采用python， <strong>整体平台的架构设计如下：</strong></p><p><img src="0640.jpeg"></p><p>整个平台的核心是灵活的配置和完善的ansible剧本能力，目前平台提供了以下常用的ansbile剧本：</p><ol><li>elasticsearch安装剧本，包含集群的安装、节点的重启、停止功能</li><li>elasticsearch扩容剧本，包含集群的扩容</li><li>机器环境准备剧本，包含安装ES前的java环境准备、系统参数设置等</li><li>elasticsearch安全插件剧本，主要针对elasticsearch 6.8之前的版本</li><li>es exporter安装剧本，安装ES监控数据采集的exporter</li><li>kibana安装剧本，安装对应ES集群的kibana</li><li>infinity安装剧本（infinity是内部的日志消费组件）</li></ol><p><strong>我们的ES管理运维平台界面-集群展示页面:</strong></p><p><img src="00640.jpeg"></p><p><strong>集群创建页面如下：</strong></p><p><img src="000640.jpeg"></p><p>通过相对完善和灵活的控制台和剧本，目前我们已经能够很方便的在几分钟内创建一套大集群或者扩容集群。通过ES运维管理平台安装的Elasticsearch，可以得到相对完善的管理以及监控：</p><p><img src="0000640.jpeg"></p><p><strong>目前我们的监控维度包含以下几个方面：</strong></p><p><img src="00000640.jpeg"></p><p><strong>监控的展示页面采用成熟方便的grafana。</strong></p><p><img src="000000640.jpeg"></p><p>同时，若集群发生故障，prometheus alertmanager会通过钉钉实时告警，以及时排查问题，降低影响范围和时长。</p><p><img src="0000000640.jpeg"></p><p><strong>使用问题&amp;挑战</strong><br>在使用Elasticsearch的实际过程中，我们遇到了不少的问题和挑战，也总结了一些实践经验：</p><h4 id="1-网络抖动引起集群RED？"><a href="#1-网络抖动引起集群RED？" class="headerlink" title="1.  网络抖动引起集群RED？"></a><em>1.  网络抖动引起集群RED？</em></h4><p>事故发生当天，查看集群状态为RED，使用命令查看当前的节点情况，缺失部分节点，在缺失部分节点服务器上查看进程和日志的情况，发现服务器上的节点状态正常，使用命令查看当前节点的状态，发现是一个集群名称相同的ES集群，状态同样为RED，如下图：<br><img src="00000000640.jpeg"><br>然后检查集群的配置，发现无论是配置文件还是_cluster/settings中都没有配置discovery.zen.minimum_master_nodes，而当天刚好机房网络有调整，于是确定集群发生了脑裂情况，重启部分节点后，集群恢复正常。ps：有的问题虽然发生概率不大，但却不应该轻视，7.0版本后已经不需要设置，官方做了优化处理。</p><h4 id="2-elasticsearch-shard的分配原则？副本？"><a href="#2-elasticsearch-shard的分配原则？副本？" class="headerlink" title="2. elasticsearch shard的分配原则？副本？"></a><em>2. elasticsearch shard的分配原则？副本？</em></h4><p>shard是elasticsearch的分片数量，且index创建后，不能动态调整，所以提前规划好shard的数量，变得尤为重要。shard过多过少，都会影响集群的整体性能，过多会导致单node上分片数过多，查询性能问题；过少，会导致单shard过大，写入性能问题，且一旦故障恢复或者rebalance，需要很长时间。建议单shard不超过30g，具体合适的shard数量，最好通过性能测试来确定。副本数建议设为1即可。</p><h4 id="3-个别节点负载超高是因为什么？"><a href="#3-个别节点负载超高是因为什么？" class="headerlink" title="3.个别节点负载超高是因为什么？"></a><em>3.个别节点负载超高是因为什么？</em></h4><p>我们遇到节点负载超高的原因主要有两个：1）分片分布不均匀，导致查询写入不均匀2）机器配置不同，比如hdd和ssd混用，导致hdd机器节点负载高，拖累整个集群</p><h4 id="4-节点heap过高怎么办？"><a href="#4-节点heap过高怎么办？" class="headerlink" title="4. 节点heap过高怎么办？"></a><em>4. 节点heap过高怎么办？</em></h4><p>观察集群整体的heap和gc情况，如果heap占用长期维持在80%左右，则可能需要对集群进行优化或扩展：1） 关闭不需要的索引2） 针对不再更新的索引，force merge3） 排查是否有不合理的查询4） 集群扩容<br><strong>未来规划</strong></p><ul><li>运维管理平台优化</li><li>智能分析实时监控</li></ul>]]></content>
     
@@ -34,6 +34,8 @@
     
     
     
+    <category term="集群" scheme="https://zto-express.github.io/tags/%E9%9B%86%E7%BE%A4/"/>
+    
     <category term="es" scheme="https://zto-express.github.io/tags/es/"/>
     
     <category term="实践" scheme="https://zto-express.github.io/tags/%E5%AE%9E%E8%B7%B5/"/>
@@ -41,8 +43,6 @@
     <category term="kabana" scheme="https://zto-express.github.io/tags/kabana/"/>
     
     <category term="运维" scheme="https://zto-express.github.io/tags/%E8%BF%90%E7%BB%B4/"/>
-    
-    <category term="集群" scheme="https://zto-express.github.io/tags/%E9%9B%86%E7%BE%A4/"/>
     
   </entry>
   
@@ -64,9 +64,9 @@
     
     
     
-    <category term="运维" scheme="https://zto-express.github.io/tags/%E8%BF%90%E7%BB%B4/"/>
-    
     <category term="集群" scheme="https://zto-express.github.io/tags/%E9%9B%86%E7%BE%A4/"/>
+    
+    <category term="运维" scheme="https://zto-express.github.io/tags/%E8%BF%90%E7%BB%B4/"/>
     
     <category term="ES" scheme="https://zto-express.github.io/tags/ES/"/>
     
@@ -75,6 +75,34 @@
     <category term="平台" scheme="https://zto-express.github.io/tags/%E5%B9%B3%E5%8F%B0/"/>
     
     <category term="监控" scheme="https://zto-express.github.io/tags/%E7%9B%91%E6%8E%A7/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>小程序之跨平台黑魔法</title>
+    <link href="https://zto-express.github.io/2020/08/15/xcx/"/>
+    <id>https://zto-express.github.io/2020/08/15/xcx/</id>
+    <published>2020-08-15T02:32:54.000Z</published>
+    <updated>2020-08-16T07:39:56.153Z</updated>
+    
+    <content type="html"><![CDATA[<p><strong>1.背景</strong></p><p>2016年微信决定上线小程序业务至今，小程序的生态已经非常庞大，覆盖的行业类目，由最初的游戏延伸至快递、电商、餐饮、教育、文旅、政务等多个领域。</p><p>小程序的生态玩家也在不断增加：微信小程序、支付宝小程序、百度小程序、抖音小程序、qq小程序、头条小程序。</p><p>企业在享受各大平台小程序的开放能力、平台流量、商业能力的同时，面临着小程序业务能力对齐，跨平台开发成本高等问题。</p><p><strong>2.产研团队面临的问题</strong></p><p><strong>快递行业面向客户的服务版块</strong></p><p><img src="0640.jpeg"><br>各大厂商的都有自己的小程序技术标准。</p><p>问题来了，业务团队希望各大平台的小程序服务都能及时同步，我们产品经理的需求也希望能在各平台小程序同步上线，以期望能更好的去抓住平台的流量，消除用户在平台切换时对服务能力的参差不齐的差异感，当用户在平台上需要快递服务时，能更快的响应到用户的需求，总体提升我们的服务质量。这也是各大小程序平台玩家希望看到的——平台快速连接商家的能力。</p><p>在这个关键因素的驱动下，研发团队不得不拆分出独立的小团队去维护不同平台的小程序，开发成本较高。</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">1 小程序平台 * n &#x3D; n 个团队</span><br></pre></td></tr></table></figure><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">2 n 个团队 *  协作效率 &#x3D; 低效率</span><br></pre></td></tr></table></figure><p>小程序的生态日渐丰富，技术标准逐渐成熟， 作为小程序平台的头部玩家，微信小程序是各大公司首先要运营的渠道，大家都希望抓住微信这个巨大的流量入口中的红利，将自身企业的服务能力通过小程序透传给用户。微信小程序平台的成长也伴随着服务提供商产品的演变，在运营小程序的过程中，我们也会碰到许多的问题。</p><p><strong>小程序1.0   vs   小程序2.0</strong></p><p><img src="00640.jpeg"><br>在产品演变的过程中，我们将服务于商家及散客的能力逐步的完善到小程序的能力当中去。随着服务能力及应用场景的逐渐完善。</p><blockquote><p>产研团队面临着严重的效能问题：<br>一个需求  </p></blockquote><ul><li><p>需要在不同的平台实现</p></li><li><p>需要踩不同平台的坑</p></li><li><p>需要管理不同平台的团队</p></li><li><p>需要写不同平台的小程序代码</p></li></ul><blockquote></blockquote><p><strong>研发团队如何解决这些问题？</strong><br><strong>3.</strong> <strong>解决之道-跨平台方案</strong></p><p><strong>我们要寻求一套跨平台解决方案，多个平台只需维护一套代码，做到小程序代码的一次编写，多端运行。能基于这套解决方案，抹平各平台的差异，并在性能及体验上有所提升。如果有一套这样的解决方案，好处不言自明。</strong></p><p><strong>我们前期的一些选型分析，需满足：</strong></p><ul><li><p>一套代码可以同时生成iOS，Android，H5，微信小程序，支付宝小程序，百度小程序等。</p></li><li><p>如果能基于vue.js最好， 上手快，学习成本低。</p></li></ul><p>经过一段时间的技术选型，我们采用具有跨平台编译功能的框架uni-app。uni-app是一个基于vue开发的前端应用框架，通过编写一套代码，可以在iOS，Android、H5、以及小程序等各端运行。采用uniapp进行开发，可能存在客户端与小程序api同步不及时的问题。为了衡量使用框架带来的风险，对uni-app的编译过程做了一个简单的分析。</p><p><strong>1）开发环境</strong></p><p>uni-app可以通过两种方式创建，HBuilderX和cli，但对于这两种方式创建的应用，编译、打包过程都是一致的，只不过HBuilderX创建的项目，会由HBuildeX内置(包括node等环境)的编译器进行编译，cli创建的项目，由安装在项目内部的编译器编译。整个编译器都由node实现，通过vue-cli的service插件对源码进行编译。</p><p><strong>2) JSAPI编译</strong></p><p>uniapp的JS语法基于VUE，大部分API参考微信小程序。在编写uniapp代码时，uni-app上的各种方法，最终会被编译为对应平台的API。uniapp将小程序的API分为3类：</p><p>a) 直接将小程序的API promisify之后挂载到uni-app上的API</p><p><img src="000640.jpeg"><br>这类API是将wx上的API引用复制到uni-app上，在编译时不需要做任何处理，其调用效果和wx API完全一样。b) 需要做特殊处理的API</p><p><img src="0000640.jpeg"><br>（支付宝小程序转换代码里面的截图）由于uni-app的API的功能实现参考了微信小程序，所以编译为微信小程序，uni-app除了一个向前兼容的API外，没有其它需要特殊处理的API，其它平台则需要对API做一些简单处理。c) 暂不支持的API</p><p><img src="00000640.jpeg"><br>这类API通过uni-app直接使用会导致调用失败。要实现平台的这些功能，可以通过wx来访问。</p><p>综上，当小程序的API发生变化时，在uni-app提供解决方案前，可以把变更或新增的API视为uni-app暂不支持的API。在编写代码时可以通过条件注释在微信小程序使用wx暴露的api，其它平台依旧使用uni-app提供的API。以拨打电话为例，可以通过以下代码来应对微信小程序API的修改。</p><p><img src="000000640.jpeg"></p><p><strong>3）HTML编译</strong></p><p>uniapp的模版语法同样也与vue保持一致，在编译过程中，模版会被转为抽象语法树，然后再对语法树进行修改，最终转换为微信小程序的语法，以v-for语法为例：</p><p><img src="0000000640.jpeg"><br>在编译之后，vue的v-for语法能全部转为wx:for。同样，HTML其它属性的编译也会通过对AST做必要的修改来完成。</p><p>HTML中的各种标签，在uniapp中都使用组件来替换。比如HTML中的div要替换成view，span替换成text、a替换成navigator。其中的view，text，navitator对应的都是不同的组件，在uniapp中 ，组件分为两种类型：内置组件和扩展组件 <strong>4）CSS编译</strong></p><p>微信的小程序的wxss使用了css的大部分特性，主要的变化有3个：</p><ul><li><p>新增了尺寸单位</p></li><li><p>样式分为全局样式和局部样式</p></li><li><p>支持部分选择器</p></li></ul><p>目前在各端的css语法都一致，按照w3c的规范书写css，后期应该不会遇到因为小程序修改css规则导致有需要修改的地方。万一有个别端实现不一致的情况，也可以通过条件编译来实现跨平台。</p><p>uni-app解决的3个问题</p><ul><li><p>多端泛滥</p></li><li><p>体验不好</p></li><li><p>生态不丰富</p></li></ul><p><img src="00000000640.jpeg"><br>图片来自：uni-app官网</p><p>引入uni-app后，团队的研发效率大大提升，原先的小程序源码经过重构转换成uni-app项目，一个业务需求，只需要编写一份代码，经过编译，就能在多端运行。</p><p><strong>这里讲一个引入uni-app后快速迭代的案例：</strong></p><p>由于C端产品线团队与某平台合作，根据双方约定，需提升该平台我司小程序的用户体验及服务能力。由于项目交付周期紧，为了达到积极响应业务需求的目的，团队需快速决策该小程序的升级优化方案——在原有的原生框架进行升级开发，还是基于uni-app框架进行开发？</p><p>在对uni-app进行大量的技术预研后，团队最终敲定了方案：基于uni-app进行开发。事实证明这次决策是对的，团队快速的按质量要求交付了小程序版本。</p><p><strong>4.</strong> <strong>积累经验</strong></p><p><strong>1）条件编译</strong><br>每个平台有自己的一些特征，因为需要针对不同平台做适配，如果编译到不同的工程之后，再做二次修改，会让后续的流程变得复杂低效。api的条件编译</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">1 &#x2F;&#x2F; #ifdef  %PLATFORM%</span><br></pre></td></tr></table></figure><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">2 平台特有的API实现</span><br></pre></td></tr></table></figure><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">3 &#x2F;&#x2F; #endif</span><br></pre></td></tr></table></figure><p>static目录条件编译，在不同平台，引用的静态资源可能也存在差异，通过 static 的的条件编译可以解决此问题</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">1 ┌─static</span><br></pre></td></tr></table></figure><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">2 │  ├─mp-weixin</span><br></pre></td></tr></table></figure><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">3 │  │  └─a.png</span><br></pre></td></tr></table></figure><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">4 │  └─b.png</span><br></pre></td></tr></table></figure><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">5 ├─main.js</span><br></pre></td></tr></table></figure><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">6 ├─App.vue</span><br></pre></td></tr></table></figure><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">7 ├─manifest.json</span><br></pre></td></tr></table></figure><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">8 └─pages.json</span><br></pre></td></tr></table></figure><p><strong>2）渲染性能</strong> 原生小程序调用setdata更新页面流程：</p><p><img src="000000000640.jpeg"><br>小程序在运行时，分逻辑层和视图层，当数据有发生变化的时候，逻辑层需要携带数据通知到视图层，而数据传递不是直接由逻辑层到视图层的，中间要先经过native层做转换，在转换的过程当中，传递和阻塞的性能消耗是比较大的，所以我们应该尽量减少setdata的调用频次和每次调用setdata时传递的数据量。</p><p><strong>这里举例一个场景：</strong></p><p>小程序下拉展示一个列表数据，比如我的快递列表，列表总共有 200 条数据，页面只展示 20 条，每次下拉刷新，当页面展示到100条时页面要如何赋值呢？</p><p>微信小程序的常见写法</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">1    data:&#123;</span><br></pre></td></tr></table></figure><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">2        list:[&#39;1&#39; , &#39;2&#39; , &#39;3&#39; , &#39;4&#39;]</span><br></pre></td></tr></table></figure><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">3    &#125;,</span><br></pre></td></tr></table></figure><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">4</span><br></pre></td></tr></table></figure><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">5    &#x2F;&#x2F; Event handler.</span><br></pre></td></tr></table></figure><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">6    viewTap: function() &#123;</span><br></pre></td></tr></table></figure><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">7          let newdata &#x3D; [&#39;5&#39; ,&#39;6&#39; ,&#39;7&#39; ,&#39;8&#39;]</span><br></pre></td></tr></table></figure><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">8          this.data.list.push(... newdata)</span><br></pre></td></tr></table></figure><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">9    this.setData(&#123;</span><br></pre></td></tr></table></figure><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">10          list: this.data.list</span><br></pre></td></tr></table></figure><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">11       &#125;</span><br></pre></td></tr></table></figure><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">12    &#125;</span><br></pre></td></tr></table></figure><p>也就是说，每次下拉刷新，setdata的数据传输都会携带之前已经展示在页面上的数据，这个对小程序的性能消耗是很大。</p><p>针对这个问题，uni-app借助了webstore JSON Diff 库 ，实现高效、精确的差量数据计算更新。webstore JSON Diff库能针对复杂的js数据进行差量对比计算最小化。</p><p>JSON Diff</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">1 diff(&#123;</span><br></pre></td></tr></table></figure><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">2     a: 1, b: 2, c: &quot;str&quot;, d: &#123; e: [2, &#123; a: 4 &#125;, 5] &#125;, f: true, h: [1], g: &#123; a: [1, 2], j: 111 &#125;</span><br></pre></td></tr></table></figure><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">3 &#125;, &#123;</span><br></pre></td></tr></table></figure><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">4    a: [], b: &quot;aa&quot;, c: 3, d: &#123; e: [3, &#123; a: 3 &#125;] &#125;, f: false, h: [1, 2], g: &#123; a: [1, 1, 1], i: &quot;delete&quot; &#125;, k: &#39;del&#39;</span><br></pre></td></tr></table></figure><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">5 &#125;)</span><br></pre></td></tr></table></figure><p>6</p><p>7 输出的结果是：</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">8 &#123; &quot;a&quot;: 1, &quot;b&quot;: 2, &quot;c&quot;: &quot;str&quot;, &quot;d.e[0]&quot;: 2, &quot;d.e[1].a&quot;: 4, &quot;d.e[2]&quot;: 5, &quot;f&quot;: true, &quot;h&quot;: [1], &quot;g.a&quot;: [1, 2], &quot;g.j&quot;: 111, &quot;g.i&quot;: null, &quot;k&quot;: null &#125;</span><br></pre></td></tr></table></figure><p><strong>3) 代码简化</strong></p><p>利用vue的高度抽象，大幅缩减模型的处理代码。以运单详情页为例，快递小哥卡片的代码逻辑分布在400行代码内，在这400行代码内需要处理各种运单状态及查看人和运单的关系。</p><p>简化之后的版本，利用vue的computed，对所有的场景进行列举，仅使用70行代码实现该功能，其中每个ui的显示与否，都独立开，也更方便后期的维护</p><p><strong>4）界面突变的问题</strong> 在重构前，大部分气泡或者浮层都没有动画效果，当出现弹窗时，由于移动设备屏幕相对较小，界面很容易发生大面积的突变，导致用户难以理解应用的逻辑，进而觉得应用使用起来不是特别顺手，重构之后的版本，引入uni-app第三方动画组件，对所有的气泡和浮层添加动画，尽量避免界面上的突变。重构的同时，还使用了一些其它优秀的uniapp组件对界面进行优化。</p><p><strong>5.</strong> <strong>整合后台服务</strong></p><p><strong>另一方面是我们要将后台服务整合好——统一鉴权、统一协议、统一的api元数据管理、微服务化、服务网关。</strong></p><p>这里介绍一下服务端的架构演进：</p><p><strong>V1.0 （2016以前）</strong></p><p><img src="0000000000640.jpeg"><br>每个端都有独立的后端，公共服务没有抽离，一些相同的业务代码，需要在不同的服务端去重复实现。可以想象改动一个功能点，研发团队会有多么的痛苦。</p><p><strong>V2.0（2016~2017）</strong></p><p><img src="00000000000640.jpeg"><br>后端服务已经整合，单体式架构，业务代码耦合严重，没有形成业务中台，业务域服务域划分不清晰，服务之间没有做隔离，数据层单一，出问题时容易引发雪崩。在技术架构上不利于业务及团队自然增长。</p><p><strong>V3.0（2018~至今）</strong></p><p><img src="000000000000640.jpeg"><br>形成了统一的服务网关及业务中台，业务域与服务域做了良好划分，统一的权限、元数据、配置、微服务管理。（本文作者：阳慧松）</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;&lt;strong&gt;1.背景&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;2016年微信决定上线小程序业务至今，小程序的生态已经非常庞大，覆盖的行业类目，由最初的游戏延伸至快递、电商、餐饮、教育、文旅、政务等多个领域。&lt;/p&gt;
+&lt;p&gt;小程序的生态玩家也在不断增加：微信小程序、支付宝小程序、</summary>
+      
+    
+    
+    
+    
+    <category term="小程序" scheme="https://zto-express.github.io/tags/%E5%B0%8F%E7%A8%8B%E5%BA%8F/"/>
+    
+    <category term="跨平台" scheme="https://zto-express.github.io/tags/%E8%B7%A8%E5%B9%B3%E5%8F%B0/"/>
+    
+    <category term="前端" scheme="https://zto-express.github.io/tags/%E5%89%8D%E7%AB%AF/"/>
     
   </entry>
   
@@ -96,15 +124,15 @@
     
     
     
-    <category term="集群" scheme="https://zto-express.github.io/tags/%E9%9B%86%E7%BE%A4/"/>
+    <category term="Kafka" scheme="https://zto-express.github.io/tags/Kafka/"/>
     
     <category term="MQ" scheme="https://zto-express.github.io/tags/MQ/"/>
-    
-    <category term="Kafka" scheme="https://zto-express.github.io/tags/Kafka/"/>
     
     <category term="消息队列" scheme="https://zto-express.github.io/tags/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/"/>
     
     <category term="日志" scheme="https://zto-express.github.io/tags/%E6%97%A5%E5%BF%97/"/>
+    
+    <category term="集群" scheme="https://zto-express.github.io/tags/%E9%9B%86%E7%BE%A4/"/>
     
   </entry>
   
@@ -126,15 +154,253 @@
     
     
     
+    <category term="Kafka" scheme="https://zto-express.github.io/tags/Kafka/"/>
+    
+    <category term="MQ" scheme="https://zto-express.github.io/tags/MQ/"/>
+    
     <category term="中通" scheme="https://zto-express.github.io/tags/%E4%B8%AD%E9%80%9A/"/>
     
     <category term="消息" scheme="https://zto-express.github.io/tags/%E6%B6%88%E6%81%AF/"/>
     
-    <category term="MQ" scheme="https://zto-express.github.io/tags/MQ/"/>
-    
     <category term="RocketMQ" scheme="https://zto-express.github.io/tags/RocketMQ/"/>
     
+  </entry>
+  
+  <entry>
+    <title>中通移动应用功耗测试最佳实践（二）</title>
+    <link href="https://zto-express.github.io/2019/07/19/test2/"/>
+    <id>https://zto-express.github.io/2019/07/19/test2/</id>
+    <published>2019-07-19T02:32:54.000Z</published>
+    <updated>2020-08-16T07:49:34.109Z</updated>
+    
+    <content type="html"><![CDATA[<p>继上一篇移动功耗测试的测试流程、指标数据和结果分析三块内容之后，本文以Android 应用的功耗测试为例，向各位科技中通读者解读基于 GT3.1.0 的二次开发过程（文中二次开发代码为绿色背景部分）。</p><p><strong>功耗测试前准备</strong></p><p>反编译后的 GT SDK 集成到被测应用，系统默认监听时间是3000毫秒，可自定义。安装 GT 客户端到手机端，自带参数、耗时、日志、插件和 AUT。功耗测试数据默认以文本形式存储在服务端，中通测试开发小伙伴对 AUT 做了二次开发实现以数据库的方式存储数据。</p><p><strong>APP的名称和版本号获取</strong></p><p>通过修改 NormalAnalysis.java 文件获取应用名称和版本信息。</p><p><img src="0640.jpeg"></p><p><strong>GT服务端信息配置</strong></p><p>添加 GT Server URL 信息到 EditText control 文本域。</p><p>需要修改三个文件，分别是 GTAUTFragment1.java、NormalAnalysis.java和 fragment_aut.xml。</p><p>1、 GTAUTFragment1.java（逻辑处理）</p><p><img src="00640.jpeg"><br>2、 NormalAnalysis.java</p><p><img src="000640.jpeg"><br>3、 fragment_aut.xml（页面上添加文本域控件）</p><p><img src="0000640.jpeg"><br><strong>电池电量显示</strong><br>因为电池电量的统计显示功能在个别手机设备上存在 BUG ，所以测试开发小伙伴自己写了一段程序来实现电池电量的显示。</p><p><strong>Add Battery Capacity:</strong></p><p>用反射调用 com.android.internal.os.PowerProfile 的类方法来获取电量。</p><p>APP_app_src_main_java_com_tencent_wstt_gt_plugin_battery/GTBatteryEngine.java</p><p><img src="00000640.jpeg"><br><strong>功耗数据传输</strong><br>GT 的数据库服务存储URL和功耗采集的数据，客户端以 okHTTP 请求方式写入。以 okHttp（网络请求库，GT客户端需要增加一个 okHttp 的 Jar 包）方式发送性能数据。二次开发内容如下：</p><p>1、 通过 app/build.gradle 文件引进 okHTTP</p><p><img src="000000640.jpeg"><br>2、 导入 okHttp Jar 包里的文件并配置且设置上传参数</p><p>在 NormalAnalysis.java 文件里做如下修改：</p><p><img src="0000000640.jpeg"></p><p>如何直观地展示功耗数据<br>怎样按不同维度筛选结果</p><p>后续的移动功耗测试该怎么做</p><p>请听下回分解</p><p><strong>“中通移动应用功耗测试最佳实践（三）”</strong> 。</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;继上一篇移动功耗测试的测试流程、指标数据和结果分析三块内容之后，本文以Android 应用的功耗测试为例，向各位科技中通读者解读基于 GT3.1.0 的二次开发过程（文中二次开发代码为绿色背景部分）。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;功耗测试前准备&lt;/strong&gt;&lt;/p&gt;
+</summary>
+      
+    
+    
+    
+    
+    <category term="Test" scheme="https://zto-express.github.io/tags/Test/"/>
+    
+    <category term="功耗" scheme="https://zto-express.github.io/tags/%E5%8A%9F%E8%80%97/"/>
+    
+    <category term="移动" scheme="https://zto-express.github.io/tags/%E7%A7%BB%E5%8A%A8/"/>
+    
+    <category term="App" scheme="https://zto-express.github.io/tags/App/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>玩转hbase百亿级数据扫描</title>
+    <link href="https://zto-express.github.io/2019/07/05/hbase/"/>
+    <id>https://zto-express.github.io/2019/07/05/hbase/</id>
+    <published>2019-07-05T02:32:54.000Z</published>
+    <updated>2020-08-16T07:59:46.199Z</updated>
+    
+    <content type="html"><![CDATA[<p>背景：</p><p>出于中通业务场景的特殊性，我们需要大量的回刷7-15天的数据，如果全部用离线抽取的方式，会给业务系统带来巨大压力，所以利用Hbaserowkey更新的特性，来存储业务数据的历史更新，每天ETL的任务需要大量从Hbase拉取数据，ETL任务需要扫描过滤近百亿数据。</p><p>传统的方案是采用的方案是HBaseStorageHandler,利用HBaseStorageHandler把hbase的表映射到hive中去，然后ETL抽取到hive的一个新表中。而这个任务对hbase region server的海量请求会给hbase集群的regionserver带来了很大的压力，时常会导致region server负载告警。凌晨也是离线任务的髙峰期，这个拉取数据的任务消耗了大量集群资源，这不但影响了hbase的作业，也影响了集群其他任务的运行。</p><p>为了解决这个问题，通过查看hbase和hive的源码，在社区中寻找支持，发现并没有对这种任务需求的支持和优化。经过调研和探索，最终利用Hbase的SnapshotScanMR这种底层特性，在我们的大数据平台上开发了一种新的任务类型，完美的解决了这种任务对集群带来的负面影响。</p><p>旧的方案以及带来的问题：</p><p>之前在背景中也交代了之前的历史方案是使用HBaseStorageHandler，并在这个方案带来了大量的问题，那么为什么这个方案 HBaseStorageHandler会导致大量的性能问题呢？</p><p>首先是 HBaseStorageHandler 底层实际上调用的是 Hbase scan中的 TableScanMR API。</p><p>为了让大家更好的理解为什么TableScanMR会带来性能问题，我们这里先讲解下TableScanMR的底层原理，以及它带来的问题。</p><p>TableScanMR原理上主要实现了ScanAPI的并行化，将scan按照region边界进行切分。</p><p><strong>原理图如下：</strong></p><p><img src="hbase/0640.jpeg"></p><p>TableScanMR会将scan请求根据目标region的分界进行分解，分解成多个sub-scan。假如scan是全表扫描，那这张表有多少region，就会将这个 scan分解成多个sub-scan，每个sub-scan的startkey和stopkey就是region的startkey和stopkey。（默认切分规则是一个region —个map ）而这里的每部分sub-scan由于都是发送next请求到region server，而一次next请求仅可以请求100行数据或者返回结果集总大小不超过2M，服务器端接收到next请求之后就开始从BlockCache、HFile以及memcache中一行一行进行扫描，扫描的行数达到100行之后就返回给客户端，客户端将这100条数据缓存到内存并返回一条给上层业务。</p><p>上层业务不断一条一条获取扫描数据，TableScanMR任务会不断发送next请求到HBase服务器，因此当数据量很大的时候，由于scan的next返回条数的限制，加上mr任务的并发scan,会造成一段时间内海量的对regionserver的请求，对资源占用比较严重。这些请求就造成了本文开头叙述的 影响集群稳定，影响hbase的读写和集群中其他任务的执行。</p><p>我们的解决方案：hbase to hive Bysnapshot</p><p>通过上面的上面的描述相信大家了解了 TableScanMR的缺陷，因此我们在自己的大数据平台上开发出了新的任务类型hbase2hiveBySnapshot， 完美的解决了这个问题。</p><p>我们的任务首先对需要导出到hive的表做一个快照，解析用户的输入条件，比如过滤条件和表名等，然后开始利用SnapshotScanMR的自定义inputFormat在内部把每个hregion的hfile作为一个map的输入，并按照表的大小来划分reduce数，接着在reduce中按照用户的条件过滤数据，最终完成后落到hdfs，按用户的输入导入到hive对应的表和分区。</p><p>经过测试，新的任务解决了HBaseStorageHandler带来的性能问题，对hbaseregion server完全没有任何压力，并且任务执行时间缩短了一半，相 比之前，资源利用率降低，集群的稳定性也得到了提升。</p><p>那么为什么我们的新任务能解决原来的性能问题呢？首先原来任务的SnapshotScanMR扫描于原始表对应的snapshot（快照）之上（更准确来说根据 snapshot restore出来的hfile），TableScanMR扫描于原始表，并发大量的Scan API至Ijregion server。而SnapshotScanMR直接会在客户端打开 region扫描HDFS上的文件，不需要发送Scan请求给RegionServer,从而绕过RegionServer在客户端直接扫描HDFS上的文件。</p><p><strong>原理图如下：</strong></p><p><img src="hbase/00640.jpeg"></p><p>这样做的好处是减小对RegionServer的影响。SnapshotScanMR这种绕过RegionServer的实现方式最大限度的减小了对集群中其他业务的影响。极大的提升了扫描效率。并且经过测试，我们的新的任务相比之前在扫描效率上会有2倍的性能提升。</p><p>目前这个任务还有很多不足之处可以继续提升，比如底层支持filter，跳过对没有数据的hFile的操作， 支持更灵活的任务切分（region切分到支持用户自定义分片），也欢迎大家多提意见，共同交流。</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;背景：&lt;/p&gt;
+&lt;p&gt;出于中通业务场景的特殊性，我们需要大量的回刷7-15天的数据，如果全部用离线抽取的方式，会给业务系统带来巨大压力，所以利用Hbaserowkey更新的特性，来存储业务数据的历史更新，每天ETL的任务需要大量从Hbase拉取数据，ETL任务需要扫描过滤近</summary>
+      
+    
+    
+    
+    
+    <category term="http" scheme="https://zto-express.github.io/tags/http/"/>
+    
+    <category term="tcp" scheme="https://zto-express.github.io/tags/tcp/"/>
+    
+    <category term="协议" scheme="https://zto-express.github.io/tags/%E5%8D%8F%E8%AE%AE/"/>
+    
+    <category term="scoket" scheme="https://zto-express.github.io/tags/scoket/"/>
+    
+    <category term="okhttp" scheme="https://zto-express.github.io/tags/okhttp/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>中通移动应用功耗测试最佳实践（一）</title>
+    <link href="https://zto-express.github.io/2019/06/19/test1/"/>
+    <id>https://zto-express.github.io/2019/06/19/test1/</id>
+    <published>2019-06-19T02:32:54.000Z</published>
+    <updated>2020-08-16T07:50:43.308Z</updated>
+    
+    <content type="html"><![CDATA[<p>随着移动互联网在快递物流行业里的应用，越来越多中通用户在手机上完成快递包裹的下单与跟踪。以中通掌中通为例，日活用户数超35万，日均启动次数超900万，庞大的用户群体和高频使用场景对移动应用的性能提出了更高要求。如何更快更准更有效地监控APP性能数据、怎样通过指标为产品性能优化提供参考等都是中通科技质量团队不断探索的课题。</p><p>中通科技测试小伙伴将分三个篇幅来解读基于GT探索出的移动功耗自动化测试最佳实践。本文为第一篇，先带大家了解下中通移动功耗的测试流程、数据采集、监控指标和报告展示。<br>测试流程</p><p>Step 1 测试需求：根据待测应用和版本确定功耗测试计划，包含测试周期、测试范围、测试资源和测试环境。</p><p>Step2 GT引入：应用的数据采集通过GT来实现，主流的Android和iOS两类系统分别通过SDK和iOS Framework包的嵌入来实现。</p><p>Step3 分支构建：基于GT的二次开发代码在Jenkins上拉出测试分支，并将GT包合入分支并构建。</p><p>Step4 用例设计：根据测试需求设计测试场景和操作步骤，并明确结果数据采集所需的手机和应用。手工完成一轮测试执行，估算用例执行时长，以此来推算数据采集的时间范围。</p><p>Step5 参数配置：GT控制台的参数配置包括待测性能项、IP地址和数据存储。</p><p>Step6 报告分析：手机端性能数据采集，性能数据的展示与结果比对分析。</p><p>数据采集</p><p>移动功耗的数据采集从手机、应用和用例三个类别展开。“三因子两状态”的不同组合，让功耗测试的结果比对更加精准，为不同维度的测试数据分析提供参考。例如：中通掌中通V5.0在iOS10的iPhone8上执行快递收发派签操作，基于自定义的手机和应用配置，采集不同轮次的用例执行结果。</p><p>监控指标</p><p>移动应用的性能指标包括CPU消耗、内存消耗、启动时间、滑动速度、界面切换速度、流量耗用、电量耗用等。中通测试小伙伴结合待测应用的具体使用场景，确定了4个监控分析指标：CPU占用、内存占用、电量消耗与流量消耗。</p><p><img src="640.jpeg"><br>CPU占用：体现了应用进程的繁忙程度</p><p><img src="0640.jpeg"><br>内存占用：体现了当前进程内存的使用情况，内存占用过高可能会引起内存抖动，或OutOfMemory异常</p><p><img src="00640.jpeg"><br>流量消耗：表示当前进程网络的使用情况</p><p><img src="000640.jpeg"><br>电量消耗：表示当前进程电量的使用情况</p><p>报告分析</p><p>应用性能指标的数据采集在报告中的展示是静态的。中通科技测试小伙伴通过设定几组计算规则将这些静态数据转化为性能优化的参考指，样例和计算规则参见如下：</p><p><img src="0000640.jpeg"></p><p><img src="00000640.jpeg"><br><strong>基础版本选择：</strong> 目前是统计最近两个迭代的APP版本，将最早的版本作为基础版本，在完成多个版本测试之后，建议将性能最优的作为参考基础版。</p><p>CPU均值对比=基础版本平均值-高版本平均值。若值为正，则高版本的CPU均值消耗较低，若值为负，则高版本CPU均值消耗较高。</p><p>内存均值对比=基础版本平均值-高版本平均值。若值为正，则高版本的内存均值消耗较低，若值为负，则高版本内存均值消耗较高。</p><p>流量对比=基础版本值-高版本值。若值为正，则高版本的流量消耗较低，若值为负，则高版本流量消耗较高。</p><p>耗电对比=（高版本满电量-高版本剩余电量）-（基础版本满电量-基础版本剩余电量）。若值为正，则高版本为更省电。若值为负，则高版本更消耗电。</p><p>未完待续</p><p>感谢中通科技测试小伙伴为应用功耗测试所付出的努力，小伙伴们也希望收到各位读者的意见与建议。后续连载的篇幅将带着大家详细了解中通科技测试小伙伴是怎样基于GT的二次开发实现移动应用功耗自动化测试的，敬请期待。</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;随着移动互联网在快递物流行业里的应用，越来越多中通用户在手机上完成快递包裹的下单与跟踪。以中通掌中通为例，日活用户数超35万，日均启动次数超900万，庞大的用户群体和高频使用场景对移动应用的性能提出了更高要求。如何更快更准更有效地监控APP性能数据、怎样通过指标为产品性能优</summary>
+      
+    
+    
+    
+    
+    <category term="Test" scheme="https://zto-express.github.io/tags/Test/"/>
+    
+    <category term="功耗" scheme="https://zto-express.github.io/tags/%E5%8A%9F%E8%80%97/"/>
+    
+    <category term="移动" scheme="https://zto-express.github.io/tags/%E7%A7%BB%E5%8A%A8/"/>
+    
+    <category term="App" scheme="https://zto-express.github.io/tags/App/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>中通API网关实践</title>
+    <link href="https://zto-express.github.io/2019/05/24/zgw/"/>
+    <id>https://zto-express.github.io/2019/05/24/zgw/</id>
+    <published>2019-05-24T02:32:54.000Z</published>
+    <updated>2020-08-16T07:41:44.954Z</updated>
+    
+    <content type="html"><![CDATA[<p>背景</p><p>在微服务的概念流行之前，API网关就已经存在了，最初是作为开放平台，面向合作伙伴提供OpenApi。随着后来微服务的流行，API网关作为系统边界，将所有的服务聚集在一起，是统一的入口，这就要求API网关能够满足不同类型应用、不同场景的需求；在技术上，也面临着可用性、灵活性、安全性等不同的挑战。<br>随着中通内部应用的大量开发，越来越多的业务系统需要能够快速开发接入，而且要保证安全稳定。所以我们决定采用网关来代理后端服务，同时抽取统一管控服务的流控、鉴权、负载均衡等等，目前市面上已经存在一些开源的网关系统，比如Spring Cloud、Kong等等，由于现在系统中已经存在大量的dubbo服务，所以我们决定通过自研网关来实现网关的通用功能以及一些定制化的开发。</p><p>使用场景</p><p><strong>在中通，网关主要有以下几种使用场景：</strong><br><strong>1. 面向第三方合作平台：</strong> 我们将内部的下单、物流查询等接口通过API网关提供给商家、合作伙伴调用；</p><p><strong>2. 面向移动APP；</strong></p><p><strong>3. 面向WEB应用：</strong> 一般在前后端分离的场景下使用，后端开发人员开发服务通过API网关暴露给前端。</p><p><strong>4. 跨语言服务调用：</strong> 中通内部存在多种语言并存的情况，有跨语言调用的情况。</p><p>只需维护一个服务，即可面向多端输出；只需调整API定义，即可实现对APP、设备、web端等多种终端的支持，避免多个场景多套API，大幅降低开发成本。</p><p><img src="0640.jpeg"></p><p>架构与设计</p><p>Architecture and Design</p><p>设计目标</p><p><strong>1. 动态配置：</strong> 能够动态新增API；</p><p><strong>2. 弹性化：</strong> 动态限流与熔断，帮助后端抵挡流量高峰；</p><p><strong>3. 安全性：</strong> 满足不同场景下的鉴权、安全需求；</p><p><strong>4. 无状态：</strong> 更好的支持横向扩展；</p><p><strong>5. 高可用：</strong> 网关作为系统内的单点，必须做到高可用。</p><p><strong>以下是核心功能框架图</strong></p><p><img src="00640.jpeg"></p><p>特点与优势</p><p><strong>1. 安全性：</strong> 网关可为开发者提供多种授权访问API的方式，从而来消除后端代码的授权问题。网关目前支持中天SSO、签名、时间戳、JWT等验证方式。<br><strong>2. 弹性：</strong> 网关可帮助开发人员限制API的并发数和每秒最大请求数，从而让后端操作可以抵挡流量高峰。还可以通过缓存 API 调用的输出来避免每次都调用后端，从而提升性能，并缩短终端用户遇到的延迟。</p><p><strong>3. 生命周期管理：</strong> 在发布了 API 之后，开发人员可能会需要构建和测试增强现有功能或添加新功能的新版本。API 网关 支持可以同时操作修改每个API 版本，以便在发布新 API 版本之后，现有应用可以继续调用先前的版本。Api网关还支持自定义切换版本的规则以便线上灰度测试。</p><p><strong>4. 协议转换：</strong> 网关提供将Dubbo服务转为HTTP协议接口的功能；网关还提供将请求数据投递到用户指定MQ的功能以满足低延迟的需求。</p><p><strong>5. 操作监控：</strong> 当 API 发布并处于使用状态后，网关会为开发者提供指标控制面板，监控对服务的调用情况。涵盖了 API 调用次数、延迟数据和错误率。你还可以在kibana中指定关键词搜索某次调用，也可以通过kibana来自定义统计API的调用情况。</p><p><strong>6. 专为开发者设计：</strong> 通过网关，开发者可以迅速的将服务提供成http接口，并可以根据需求自定义多种授权方式；可以迅速搭建基于天工（内部前端框架）-网关的后台管理系统，开发者无需关注sso、session的问题，专注于业务逻辑的开发。</p><p><strong>7. 节省时间：</strong> 网关提供完善的API文档、调用调试、Mock等功能，开发人员无需自己编写接口文档。</p><p>分层实现</p><p><strong>中通网关在逻辑上分为四层</strong></p><ol><li><p>接入层，负责请求参数的解析</p></li><li><p>拦截器层，负责实现网关鉴权、灰度、限流等核心功能</p></li><li><p>映射层，负责将请求参数映射转换为后端服务所需要的参数</p></li><li><p>调用层，负责将转换后的参数调用后端服务的功能</p></li></ol><p><img src="000640.jpeg"></p><p>高可用</p><p>网关作为一个单点，一旦发生故障是灾难性的，我们采用了以下的设计来增加保障网关的高可用性：<br><strong>1. 限流与熔断：</strong> 我们给API提供了不同维度的限流，基于用户和API的维度，可以对每个用户每分钟（每小时、每天）的调用量做限制，也可以对每个API的并发数量做限制。 在任何分布式环境里，故障是难以避免的，我们经常遇到后端服务异常或者超时的情况，这时我们通过引入hystrix来隔离API，使得一个API出现故障时，不会拖累API网关造成整个API网关故障。又因为我们一个API网关包含了几百个API，如果使用线程池的方式，线程会过多，所以我们采用信号量的方式。我们通过apollo配置中心对hystrix的配置进行管理，使得hystrix配置可以被动态修改。</p><p><strong>2. 线程隔离：</strong> 我们将耗时较长的API隔离开来，放入单独的线程池中执行，当其出现超时或者其他异常时，不会影响其他API的调用。</p><p><strong>3. HTTP服务的负载均衡：</strong> 由于dubbo自带了负载均衡策略，所以我们对http服务做了负载均衡。目前我们对http服务提供了两种策略，一种是普通的轮循，一种是可以感知服务节点状态的轮循，我们参考了netflix ribbon的设计，会定期的访问http服务，如果服务不可用，则将其从可用列表中移除，如果可用，则将其添加到可用列表中去。</p><p><strong>4.</strong> <strong>弱依赖第三方服务：</strong> 我们对所有的API配置、以及Session信息做了本地缓存，在数据库、Redis出现异常时也不影响接口的访问，由此来降低因第三方服务、中间件不稳定导致的网关故障</p><p>网关模块</p><p><strong>1. Gateway Web：</strong> 网关API入口；<br><strong>2. Gateway Portal：</strong> 统一的管理界面，开发人员可以在此创建配置API。</p><p><img src="0000640.jpeg"></p><p>日志与异常</p><p>为了让后端开发人员能方便的查询API调用日志，我们将API调用的参数、耗时、异常等打印到logback，通过logkit收集到kafka，然后消费采集到elasticsearch，通过kibana对日志进行查询和展示。除此之外，我们还定期的对日志进行不同维度的统计（调用量、错误率等），在控制台中展示查询。</p><p>WEB应用SSO插件</p><p>WEB应用SSO插件是我们调研公司内部当前浏览器端开发的情况推出的前端中台解决方案，结合前端的天工模板，旨在解决当前Web开发中存在的问题，提升开发效率。</p><p><strong>这套解决方案有以下的功能：</strong></p><ol><li><p>统一交互前后端交互标准；</p></li><li><p>SSO登入登出、权限控制等均由天工模板、网关来实现；</p></li><li><p>提供统一的数据签名、黑白名单、防刷等安全防护；</p></li><li><p>Apicenter提供统一的文档生成、模拟调用、数据mock功能；</p></li><li><p>提供前端设计器，通过拖拽组件创建前端页面。</p></li></ol><p><strong>下图是接入Web应用接入网关之前与接入之后的情况：</strong></p><p>接入之前：</p><p><img src="00000640.jpeg"><br>接入之后：</p><p><img src="000000640.jpeg"></p><p>技术细节</p><p><strong>全异步化</strong><br>同步调用受限于线程数量，而线程资源宝贵，在 API 网关这类高并发应用场景下，一定比例的 API 超时就会让所有调用的 RT 升高，异步化的引入彻底的隔离 API 之间的影响。网关在 Servlet 线程在进行完 API 调用前置校验后，使用Dubbo和AsyncHttpclient 发起远程服务调用，并结束和回收到该线程</p><ol><li><p>使用异步Servlet</p></li><li><p>使用异步Dubbo</p></li><li><p>使用异步HTTP库（AsyncHttpclient）</p></li></ol><p><img src="0000000640.jpeg"><br><strong>灰度</strong></p><p><strong>原理</strong></p><p>网关支持同一个API有多个版本，在API被调用时，灰度控制相关的拦截器会在后端服务被调用前执行脚本，根据执行结果确定版本。 为了方便开发人员编写，我们支持js和groovy两种语言的脚本。</p><p><img src="00000000640.jpeg"><br><strong>应用场景</strong></p><p>在脚本中，可以取到HTTP请求的参数、header、IP地址等信息，也可以取到当前登录用户的信息。由此，就可以方便的根据请求参数、根据登录用户和网点来决定调用哪个版本的API。</p><p>遇到的问题</p><p>problem</p><p><strong>dubbo初始化导致heap溢出</strong><br>没有提供者的Dubbo服务不能不停的初始化，我们有一次线上好几个节点同时出现了故障，排查出来是dubbo服务不停的初始化造成的内存溢出。是因为线上一个Dubbo服务下线了，但是网关的API没有下线，而且调用方也没有停止调用，就导致这个dubbo服务一直不停的初始化。我们先将API下线，并调整了同一个服务两次初始化的间隔时间临时解决了这个问题。</p><p><strong>后端服务超时导致网关阻塞</strong></p><p>由于servlet默认是阻塞式调用，后端服务大量超时，导致网关线程被占用无法释放，无法接收新的请求，通过异步Servlet和多级线程池的方式，隔离后端服务对网关造成的影响</p><p>总结</p><p>summary</p><p><strong>网关在中通现状</strong><br>中通的API网关目前服务了内部的众多系统——掌中通、掌上神州、网投系统等，目前日均调用量达到13亿，峰值调用约3万qps。</p><p><strong>未来的展望</strong></p><ol><li><p>未来网关将会作为中台解决方案的一员，应用于中通的各种系统，不管是移动端还是浏览器Web端，都有网关的身影；</p></li><li><p>网关将会提供一系列SDK工具，涵盖API的创建，文档的生成与查看，服务的Mock与测试等，为开发人员提供方便的服务。</p></li></ol>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;背景&lt;/p&gt;
+&lt;p&gt;在微服务的概念流行之前，API网关就已经存在了，最初是作为开放平台，面向合作伙伴提供OpenApi。随着后来微服务的流行，API网关作为系统边界，将所有的服务聚集在一起，是统一的入口，这就要求API网关能够满足不同类型应用、不同场景的需求；在技术上，也面</summary>
+      
+    
+    
+    
+    
+    <category term="API" scheme="https://zto-express.github.io/tags/API/"/>
+    
+    <category term="Gateway" scheme="https://zto-express.github.io/tags/Gateway/"/>
+    
+    <category term="网关" scheme="https://zto-express.github.io/tags/%E7%BD%91%E5%85%B3/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>数据中台进行曲之OneData探索实践</title>
+    <link href="https://zto-express.github.io/2019/04/30/onedata/"/>
+    <id>https://zto-express.github.io/2019/04/30/onedata/</id>
+    <published>2019-04-30T02:32:54.000Z</published>
+    <updated>2020-08-16T07:56:44.608Z</updated>
+    
+    <content type="html"><![CDATA[<p>一、背景<br>企业运营产生的业务数据蕴含着巨大的商业价值，是企业宝贵的数据资源。 <strong>快速、准确、最大化的利用已存在的数据资源，可以辅助领导层做出商业决策、优化公司业务持续发展形成闭环进而提高企业的核心竞争力。</strong></p><p>当企业数据规模较小、业务较单一或者为快速相应业务需求的情况下，经过对业务数据的抽取、清洗、规范化等简单处理后，往往直接用于数据开发。此种方式为烟囱开发模式，虽然可以较快得到开发结果，但是弊端也非常明显：</p><p><strong>- 数据层面：</strong></p><ol><li><p>烟囱林立没有共同根基，不能保证数据的一致性，进而影响准确性；</p></li><li><p>数据无沉淀难复用，进而导致重复开发的情况非常严重；</p></li><li><p>数据难以服务化；</p></li></ol><p><strong>- 管理层面：</strong></p><ol><li><p>数据质量难以保证；</p></li><li><p>管理混乱，如果业务数据有变动，影响范围难以评估，改动更是耗时费力；</p></li><li><p>很难组织元数据管理，尤其是血缘关系，很难理清。</p></li></ol><p>随着业务数据的爆炸式增长，烟囱开发模式的弊端越来越明显，数据开发工作随之遇到瓶颈，工作难以开展。</p><p>数仓建设是突破烟囱开发模式瓶颈的灵丹妙药，关系模型和维度模型是数仓建设的两种方法论，其中维度模型由于相对能快速上手、快速交付且较适用于OLAP系统(关系模型适用于OLTP系统)，在业内获得广泛使用。维度模型应用的典型代表是阿里的OneData体系。</p><p><strong>中通大数据初创时期，在快速响应业务需求的同时，着手建设数据仓库。结合对OneData的理解和自身特点，我们形成了一套符合自身数据特色的实践体系。</strong></p><p><img src="0640.jpeg"><br>二、经典数据仓库方法论回顾</p><p>经典的数仓建设方法有 <strong>关系模型(Inmon模型)</strong> 和 <strong>维度模型(Kimball模型)</strong> 。</p><ol><li>关系模型以数据源为导向，采用自上而下的方法，即从数据源到数据仓库再到数据集市的一种瀑布流开发方法。具有以下特点：</li></ol><ol><li><p>以第三范式（3NF）为基础，数据冗余程度低；</p></li><li><p>物理表数量多，这些表可以较为灵活地被应用，功能性较强；</p></li><li><p>DW层数据并不直接被用来做BI分析，而是先在DW层之上建立数据集市，数据集市来满足BI分析需求；</p></li><li><p>需要全面了解公司业务和数据，实施周期较长</p></li><li><p>维度模型以业务需求为导向，采用自底向上的方法，即从数据集市到数据仓库再到数据源的一种敏捷开发方法。具有以下特点：</p></li><li><p>表分为维度表和事实表两种，用星型模型、雪花模型或星座模型等形式进行组织；</p></li><li><p>物理表的数据量较关系模型少很多；</p></li><li><p>DW层事实表往往含有一些固化的汇总数据，其上的数据集市建设较关系模型要简便；</p></li><li><p>从业务需求角度出发，适合快速迭代。</p></li></ol><p>结合上述两种建模方式各自的特点，业内偏向于维度模型构建数据仓库，其中以阿里Onedata体系最具代表性。OneData以维度建模为核心理念，同时对其进行了一定的升级和扩展，包括：一致性的指标定义体系、模型设计方法体系以及配套工具。</p><p><img src="00640.jpeg"><br>三、数仓建设过程<br><strong>1. 建模方法论:</strong></p><p>数仓建设过程中，总结的经验：</p><ol><li><p>高内聚低耦合；</p></li><li><p>公共逻辑要下沉以及统一口径统一出处确保一致性；</p></li><li><p>合理控制模型表数量；</p></li><li><p>合理使用拉链表，拉链较耗性能；</p></li><li><p>数据质量监控与建模相辅相成；</p></li><li><p>变化维表尽可能的准确反映历史(维表拉链化或全量快照分区化)；</p></li><li><p>模型任务要保证时效性。</p></li></ol><p><strong>2. 数仓建设步骤:</strong></p><p>数仓建设中，我们遵循下面方法:</p><ol><li><p>需求分析、业务系统数据调研；</p></li><li><p>分析业务过程、选择粒度并划分主题域；</p></li><li><p>确定维度并构建总线矩阵；</p></li><li><p>确定事实。</p></li></ol><p>具体展开分析：</p><p><strong>1） 需求分析、业务系统数据调研:</strong></p><p>数仓建设首先要有明确的需求，脱离需求空谈数仓建设，缺乏现实意义，且易用性差。数仓建设的需求一般来自四个方面:</p><p>(1) 支持应用层业务需求；</p><p>(2) 数据分析师的开发需求；</p><p>(3) 对现有应用层或数据分析师分析结果的沉淀，将一些通用的统一口径的指标沉淀到数仓；</p><p>(4) 对现有数仓的迭代优化</p><p>在需求分析的过程中，需要明确统计指标的定义和统计粒度、考虑明细宽表和汇总宽表的设计以及任务的时效性，如果涉及到维表要考虑维表的设置以及宽表中是否要进行维度退化等。</p><p>在需求明确后，需要对业务系统进行调研，请业务系统的产品/开发人员介绍具体的业务流程，充分了解业务系统的表结构、表中关键字段甚至是每个字段的业务逻辑以及数据记录的创建、更新等流程。数据的抽取方式(全量还是增量)以及一些特殊情况下数据的补抽方法也需要进行充分调研。总之，数仓要真实的反映业务。</p><p><strong>2) 分析业务过程并划分主题域</strong></p><p>业务过程指的是公司业务活动中由执行主体完成的的不可拆分的一个原子行为事件。比如“揽件”为业务员(执行主体)向发件人取件(原子行为)的一个行为事件。</p><p>(1) 分析业务过程：</p><p>了解业务过程产生了哪些数据，这些数据是否会更新，更新的场景有哪些。比如以“运单”为粒度的“揽件”业务过程，其中的“首次揽件时间”字段，可能会随着揽件扫描数据的上传而发生变化(一票运单可能会存在多次揽收扫描的情况，早揽收的扫描记录，可能由于网络等原因比后扫描的记录晚上传)；</p><p>明确各个业务过程的联系，在明确各个业务过程的联系之后，才能对整个业务流程有准确把控，并确定哪些是核心业务过程，也有利于主题域的划分。快递行业的业务流程图大致如下图所示：</p><p><img src="000640.jpeg"><br>快递业务流程图</p><p>(2) 选择粒度：不同粒度决定了数据的“明细程度”，同时会影响维表的设计。比如对于“揽件”这一业务过程，如果以运单为粒度，则需要设计运单相关维表，如果以“业务员”为粒度，则需要设计业务员相关维表。</p><p>(3) 划分主题域：各个业务过程前后关联，完成整个业务流程，将彼此聚合性比较高的业务过程划入同一主题，便于数据的管理、使用和维护。当前划分为: 汽运、运单、客服、财金、客户等主题域。以上所述为从业务角度出发划分主题域，比较适用于数仓明细层。数仓汇总层的指标逻辑往往涉及到多个主题域明细表，此时数仓汇总层按照业务进行主题域划分往往不能全面的反映指标的特质，也会给使用带来稍微不便。所以在数仓汇总层，我们更多的是从分析的角度划分主题域。</p><p><strong>3) 确定维度并构建总线矩阵</strong></p><p>基于业务过程的分析粒度创建相关维表，比如分别以业务员、运单、客户等为粒度的“揽件”业务过程，要建立业务员维表、运单维表、客户维表。业务员维表包含业务员code、归属网点、姓名、年龄、工作手机号码、三段码等维度信息；运单维表包含 运单code、运单使用日期、运单使用网点、运单打印渠道等维度信息；客户维表包含客户id、来源渠道、注册日期等维度信息。</p><p>确定维度要尽量做到维度的唯一性，尤其是一些共享维表，必须做到有且仅有一份。维表尽可能的反映历史。我司采用网点加盟的业务模式，部分维表下放到网点进行维护，数据质量波动较大，维表反映历史既可以还原数据，又方便对维表进行数据质量监控。</p><p>维度的获取一般有几个方法：</p><p>(1)直接从业务系统获取后，稍作加工；</p><p>(2)从业务数据中进行提炼，比如从json结构的业务数据中提炼；</p><p>(3)少量的线上手工维护的维表或者需要做深度加工的维表，比如使用桥接模式的维表。</p><p>划分了主题域并通过对业务过程的分析确定粒度后，就可以构建总线矩阵。总线矩阵中标明了主题域包含的业务过程，业务过程包含的指标和相关的维度。下图为订单主题域下揽件和派件业务过程的总线矩阵实例：<br><img src="0000640.jpeg"><br>总线矩阵</p><p><strong>4) 确定事实</strong></p><p>确定事实其实就是通过确认分析需要的指标来构建事实宽表。事实宽表一般划分为：明细事实宽表和汇总事实宽表，前者主要对原始业务数据进行清洗、规范化等处理，后者主要基于前者进行汇总统计出指标并支撑上层开发。</p><p><img src="00000640.jpeg"><br>四、数仓架构<br>基于前述数仓建设方法，我们把数仓进行如下分层：</p><p><img src="000000640.jpeg"><br>数仓架构图</p><p>清晰明朗的数据分层，可以提升数仓的结构性、易用性，同时便于管理。业内一般将数仓分为3层或4层，结合工作经验，我们将数仓分为4层，各层的定义和说明如下： <strong>1.数据统计层：</strong></p><p>针对不同业务需求进行针对性开发，直接应用于各数据产品</p><p><strong>2.数仓汇总层：</strong></p><p>1）采用维度退化，提高表的易用性；</p><p>2）生成汇总级宽表数据，保存通用性指标，方便统计分析；</p><p>3）按照分析域主题划分</p><p><strong>3.数仓明细层：</strong></p><p>1）一般按数据创建时间或者上传时间分区，按业务主题域划分，同时规范化建表/字段；</p><p>2）保留所有历史数据，进行标准化清洗(统一格式、单位、类型、默认值等)；</p><p>3）保存明细宽表。</p><p><strong>4.操作数据层：</strong></p><p>一般按更新时间做增量抽取，表与业务数据库表保持同构。</p><p>图中绿色箭头标识层级间的数据流向：ods-&gt;dw-&gt;dm-&gt;st，其中dw、dm层和st层数据可以自流。</p><p>原则上要求各层之间不会出现其他数据流向，尤其是数据倒流的情形，如果遇到紧急的临时需求，可以在标识清楚的前提下视情况简化流程；</p><ol><li><p>如果某st层指标为其他多个st层指标的基础，尽量将此st层指标提炼并沉淀到dm层；</p></li><li><p>数据分析师的分析脚本如果需要沉淀，要沉掉到st层，并对脚本进行review优化，提升时效性；</p></li><li><p>数据分析师脚本中有线下手工维护的维表，需要把这些维表尽量用现有维表实现或者改由线上维护。</p></li></ol><p><img src="0000000640.jpeg"><br>五、模型介绍<br><strong>1. 事实模型介绍</strong></p><p>结合工作经验，从不同角度审视，我们将数仓模型划分为三种类型：</p><ol><li><p>依据数据的汇总属性划分：明细模型(保存明细指标)和汇总模型(保存汇总指标)；</p></li><li><p>依据数据的变化属性划分：稳定模型(保存逻辑基本不会变化的指标)和扩展模型(保存逻辑易变的指标)；</p></li><li><p>依据模型的时效性划分：小时模型(模型增量任务每小时运行一次)和T-1离线模型(模型任务每天运行一次)。</p></li></ol><p>在实际的模型开发工作中，随着业务需求的递进，提升模型时效性和快速响应模型指标的逻辑变更是需要持续关注的问题。下面列举几个案例： <strong>时效性问题案例：</strong></p><p><strong>案例1：</strong> 业务需求对某指标的时间要求由T-1递进为当天的8时、12时、16时。看似最简单有效的方法是：模型任务在凌晨调度之后，在8时、12时、16时再各运行一次。但是这种方法需要解决下面三个紧迫的问题：</p><ol><li><p>模型运行时长不能太长。运行时间太长，指标的生成会延时较久。但是对于较复杂的模型，一般运行时间较长；</p></li><li><p>随着模型任务的增多，需要排除各个模型任务对各自下游任务的交叉影响，保证模型任务的易用性；</p></li><li><p>如果业务要求时间点增多，需要等量增加对应时间点的模型任务，这样模型任务会越来越多，直至变成小时任务，但是由于模型任务的运行时间较长，又不具备改成小时任务的条件。</p></li></ol><p>解决方案：</p><p>为了提升模型的时效性，我们采用增量更新方法，设计了模型的小时增量更新机制(大多数模型指标可以设置成增量更新的形式)。当前小时模型指标 = 整合(前一小时模型指标 + 当前小时源数据)，相当于把T-1离线模型的全量计算分配到每小时，并结合整合逻辑得到每小时的模型指标。其中整合逻辑的设计是关键，优秀的整合逻辑可以明显提升任务运行效率。T-1离线模型同样需要保留，一方面满足T-1离线业务需求，同时也可以对小时增量更新机制进行对比验证。</p><p><strong>模型指标逻辑变化案例：</strong></p><p><strong>案例2：</strong> 虽然模型指标的逻辑相对固定，但是不排除依据需求进行变更的情形，逻辑变更后，往往需要重刷一定时间段内(一般是1年内)的数据。如果模型宽表字段很多，即使可以单独设计刷数脚本，刷数也依然是一项较繁重的工作(稳妥的刷数步骤:数据刷入临时表-核对逻辑不变指标-校验逻辑更改指标-临时表数据刷入目标宽表)。这显然不能较快的相应业务需求。</p><p>解决方案：</p><p>为了快速相应模型指标逻辑的变化，我们把模型指标的变化属性作为设计宽表的一个因素，把逻辑较固定的指标放到稳定模型宽表，把逻辑易变或者变化概率较大的指标放到扩展模型宽表，以此来减少逻辑变化后刷数的工作量。</p><p>模型实例：基于上面的思路，我们创建了运单模型的小时体系与T-1离线体系，如下图所示：</p><p><img src="00000000640.jpeg"><br>运单模型体系</p><p>其中：</p><ol><li><p>扩展表中恒定指标可以转移到稳定表；</p></li><li><p>小时模型和离线模型数据做对比验证；</p></li><li><p>小时宽表只保留最近1月数据；</p></li><li><p>离线表负责刷历史数据。</p></li></ol><p>模型意义：</p><p>运单模型是基于扫描数据生成事实指标描述运单从揽件到最后客户签收的整个生命周期信息，你可以了解到这个运单是被哪个网点揽件，什么时候交到首中心，中间经过哪些中心，最后由哪个网点进行派件，什么时候签收。有了运单模型就可以很方便的对路由、延误、中转流向等业务问题进行统计分析；</p><p><strong>2. 维表介绍</strong></p><p>维表体系建设出发点：</p><ol><li><p>各业务系统各有一套维表，大数据平台抽取维表后，维表数量过多，使用不便、管理不宜且不能保证唯一性；</p></li><li><p>大数据应用层产品，为了满足各自需求，创建了一系列维表，功能相似的维表甚至有多个，维表间关系更是错综复杂；</p></li><li><p>分析师手工维护维表较多，且往往只有一位同事了解，“一人不在，整车抛锚”的风险较大。</p></li><li><p>变化维表尽可能反映历史。</p></li></ol><p>基于统一维度、净化维表体系的目的，数仓对整个大数据的维表进行梳理、整合、管理，创建共享维表：</p><ol><li><p>相同粒度的维表集成到一张维表，各关系一目了然；</p></li><li><p>应用层产品的维表统一规划、统一设计，删除冗余维表；</p></li><li><p>手工维表逻辑公开，且维护线上化；</p></li><li><p>变化维表拉链化或全量快照分区化。</p></li></ol><p><strong>维表实例:</strong></p><p>网点组织关系维表作为典型的共享维表，包含全部涉及到网点的组织关系，支撑了数仓模型、应用层统计分析等相关的维度需求。如下图所示：</p><p><img src="000000000640.jpeg"><br>网点组织关系</p><p><img src="0000000000640.jpeg"><br>六、数据质量监控与建模相辅相成<br>任何优秀的模型都是反复迭代开发的结果，迭代的过程中，数据质量监控起到举足轻重的作用。数据质量监控一般从完整性、准确性、一致性、及时性四个方面进行设计，各个模型层偏重点不同。监控的流程为: 从收集规则、配置规则、监控告警、异常处理、优化规则五个环节建立数据质量监控的闭环流程，如下图所示：</p><p><img src="00000000000640.jpeg"></p><p>数据质量闭环流程</p><p>ods/dw层为直接抽取的业务数据或者清洗过的明细数据，主要侧重于数据的完整性、一致性以及少量的准确性检测：</p><p>1)规则检测：各类规则检测，比如运单号规则，对不合规单号进行预警，确保准确性；</p><p>2)量值检测：抽取数据量与源表数据量对比、重复数据检测、空值检测等确保完整性、一致性；</p><p>3)规范检测: 指标类型格式检测，比如日期格式: yyyy-MM-dd，时间格式: yyyy-MM-dd hh:mm:ss；</p><p>4)其他检测：字段错位检测、对比检测、抽取任务风险提前检测等。</p><p>dm/st层为汇总过的统计类数据，主要侧重于数据的准确性、及时性和完整性检测：</p><p>1)量值检测: 分区表当天分区中数据量环比/同比检测等；</p><p>2)比率检测: 各渠道业务量占比环比对比检测等；</p><p>3)对比检测：小时宽表与T-1宽表指标对比，离线指标与实时指标对比等；</p><p>4)其他检测: 模型宽表任务运行时间环比检测等。</p><p><strong>案例1：</strong> 指标变化异常告警<br>告警信息：无派件数据量检测：检测数据日期 2019–，网点*环比数据异常，增加比例为162.0%；</p><p>自上而下追踪：核验st层表中数据量环比变化 -&gt; 模型宽表数据核验 -&gt; 源扫描表数据核验，并使用公司内部工具进行对比检查，最终确定扫描表中告警网点的数据有缺失，深究原因：DBA做扩容引起备库数据入库时间为空值，导致数据抽取不到。及时通知DBA对数据进行修复处理。</p><p><strong>案例2：</strong> 抽取任务风险提前检测告警</p><p>业务系统偶尔会对一定时间范围内的数据进行重刷，这样会导致刷数当天的增量数据陡增，影响第二天凌晨的数据抽取任务，严重的会导致任务失败。通过“抽取任务风险提前检测”监控，我们可以提前感知并确定风险，对抽数任务做针对性调整，即不影响数据抽取，又能保证第二天任务的时效性。</p><p>告警信息：抽取任务风险告警：检测数据日期 2019–，表数据量环比数据异常，增加比例为972.0%。</p><p>风险追踪：核验风险 -&gt;通知业务表负责人，询问情况 -&gt; 抽数任务做针对性调整</p><p>数据质量检测，重点在于监控规则的生成整理和优化。同时完善的开发规范、良好的开发习惯、严谨的代码review流程都可以减少不必要的数据质量问题。</p><p><img src="000000000000640.jpeg"><br>七、项目收益<br>基于数仓建设成果，并结合实际项目历程，以运单模型为例列举收益如下：</p><p><img src="0000000000000640.jpeg"><br>运单模型收益</p><p><img src="00000000000000640.jpeg"><br>八、展望未来</p><p>基于对OneData体系的理解并结合行业特色，我们构建了可靠、稳定的数据仓库，形成了良好的开发循环。模型的时效性是我们持续关注的地方，同时我们也致力于提高模型的覆盖率，尽量做到覆盖所有关键业务。</p><p>通过不断提升数据的准确性、一致性、时效性来为数据应用层开发提供强力支撑是我们坚守的使命。 <strong>展望未来，为数据中台提供稳定、准确的数据基底是我们持续奋斗的目标。</strong></p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;一、背景&lt;br&gt;企业运营产生的业务数据蕴含着巨大的商业价值，是企业宝贵的数据资源。 &lt;strong&gt;快速、准确、最大化的利用已存在的数据资源，可以辅助领导层做出商业决策、优化公司业务持续发展形成闭环进而提高企业的核心竞争力。&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;当企业数据规模较</summary>
+      
+    
+    
+    
+    
+    <category term="Spark" scheme="https://zto-express.github.io/tags/Spark/"/>
+    
+    <category term="HBase" scheme="https://zto-express.github.io/tags/HBase/"/>
+    
+    <category term="大数据" scheme="https://zto-express.github.io/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
+    
+    <category term="onedata" scheme="https://zto-express.github.io/tags/onedata/"/>
+    
+    <category term="数据中台" scheme="https://zto-express.github.io/tags/%E6%95%B0%E6%8D%AE%E4%B8%AD%E5%8F%B0/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>百亿级别！Spark与HBase怎么玩？</title>
+    <link href="https://zto-express.github.io/2018/12/21/spark/"/>
+    <id>https://zto-express.github.io/2018/12/21/spark/</id>
+    <published>2018-12-21T02:32:54.000Z</published>
+    <updated>2020-08-16T07:52:49.573Z</updated>
+    
+    <content type="html"><![CDATA[<h3 id="背景："><a href="#背景：" class="headerlink" title="||背景："></a><em>||背景：</em></h3><p>近年来，中通的业务量不断的攀升，每天产生的数据量高达几十亿条。这种规模的数据量给传统的技术带来了极大的挑战。海量数据的存储和计算，常用的技术手段是分库分表，但分库分表同样有着自身的不足。因此，对于全局性、跨库跨表的存储和计算需求，普遍的做法是交由大数据进行计算。</p><p>对于不做更新的数据，可以通过sqoop将数据从业务系统数据库同步到hive中，进行离线计算。但对于有大量更新的数据，就不能采用以上的做法了，因为hive不能很好的支持更新操作。我们的做法是使用HBase做数据存储与去重，然后以自研的HBase工具为支撑，进行HBase的高性能读写操作。</p><h3 id="实现原理："><a href="#实现原理：" class="headerlink" title="||实现原理："></a><em>||实现原理：</em></h3><p>Apache Spark是专为大规模数据处理而设计的分布式内存计算引擎，特点是灵活快速。HBase是一个分布式的、面向列的开源数据库，适用于海量数据的存储与实时写入。HBaseOper是中通大数据团队针对Spark与HBase自研的高性能HBase读写工具，它是在HBase官方API基础上依据中通特有的需求场景进行了二次开发，内部提供了诸多与Spark紧密结合的API，它的诞生极大的提高了Spark对Hbase的读写速度。经测试，比Spark原生的HBase API性能提高3倍以上，平均开发效率提升10倍以上。正因为HBaseOper的诞生，才促进了Spark与HBase在中通的大规模应用。</p><p><img src="0640.jpeg"></p><h3 id="整体架构："><a href="#整体架构：" class="headerlink" title="||整体架构："></a><em>||整体架构：</em></h3><p>通过ogg/Canal将数据实时投递到kafka中，交由Spark Streaming分批实时消费处理，经过数据清洗、处理与转换，使用HBaseOper将数据逐批写入到HBase中，完成数据的实时同步与更新。离线计算环节，Spark SQL通过HBaseOper将指定时间范围内的数据分布式抽取到Spark内存中，进行SQL运算，并将最终结果落地到数仓中。</p><p><img src="00640.jpeg"></p><h3 id="应用场景："><a href="#应用场景：" class="headerlink" title="||应用场景："></a><em>||应用场景：</em></h3><p>Spark与HBase广泛应用于实时数据写入、离线统计抽取、历史数据归档、海量数据的实时判断等方面。</p><ul><li>实时数据写入</li></ul><p>Spark Streaming作为分布式实时计算的佼佼者，擅长海量数据的实时计算。我们通过Spark Streaming将消费到的含有大量更新操作的数据进行清洗、分析与计算，最终以事先设计好的规则实时写入到HBase中，HBase会自动维护重复的数据。</p><ul><li>离线统计抽取</li></ul><p>HBase本身不擅长分析，为了使HBase中的海量数据产生价值，我们通过自研的HBase工具，对指定时间范围内的数据进行扫描、过滤，并加载到Spark SQL端，进行各种复杂的统计需求。</p><ul><li>历史数据归档</li></ul><p>有些数据需要按照指定的规则进行即席查询，但多达几百亿上千亿的历史数据逐条写入HBase显然是不可取的，一来速度很慢，二来对RegionServer会产生较大的压力。对于此种场景，我们团队HBase的API进行了扩展，支持将hive的数据转换成HFile，一次性推到RegionServer中，极大的降低了RegionServer压力，大幅提高了数据写入的速度。</p><ul><li>海量数据实时判断</li></ul><p>在某些场景下，我们需要对历史（一个月以前）的数据进行实时的判断、对比与更新。由于数据量大（高峰时段160w/m），且实时性较高，redis或传统的关系型数据库并不能很好的满足要求。对于这种需求，我们对Spark Streaming程序架构进行了梳理，并对HBase相关的API进行了二次开发，最终满足了以上的需求。</p><h3 id="总结："><a href="#总结：" class="headerlink" title="||总结："></a><em>||总结：</em></h3><p>大数据时代，没有一种技术能做到通吃，选择适合的技术组合，或许将给你带来新的契机。通过对Spark与HBase的合理运用，成功的为诸多的业务系统提供了强有力的大数据算力！</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;h3 id=&quot;背景：&quot;&gt;&lt;a href=&quot;#背景：&quot; class=&quot;headerlink&quot; title=&quot;||背景：&quot;&gt;&lt;/a&gt;&lt;em&gt;||背景：&lt;/em&gt;&lt;/h3&gt;&lt;p&gt;近年来，中通的业务量不断的攀升，每天产生的数据量高达几十亿条。这种规模的数据量给传统的技术带来了极大的挑战</summary>
+      
+    
+    
+    
+    
+    <category term="Spark" scheme="https://zto-express.github.io/tags/Spark/"/>
+    
+    <category term="HBase" scheme="https://zto-express.github.io/tags/HBase/"/>
+    
+    <category term="大数据" scheme="https://zto-express.github.io/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
+    
+    <category term="百亿" scheme="https://zto-express.github.io/tags/%E7%99%BE%E4%BA%BF/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>OkHttp从原理到应用</title>
+    <link href="https://zto-express.github.io/2018/12/14/http/"/>
+    <id>https://zto-express.github.io/2018/12/14/http/</id>
+    <published>2018-12-14T02:32:54.000Z</published>
+    <updated>2020-08-16T07:58:01.916Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="OkHttp从原理到应用"><a href="#OkHttp从原理到应用" class="headerlink" title="OkHttp从原理到应用"></a>OkHttp从原理到应用</h2><p><em>2018-12-14</em> </p><h2 id="为什么我们要采用Okhttp作为网络请求框架？"><a href="#为什么我们要采用Okhttp作为网络请求框架？" class="headerlink" title="为什么我们要采用Okhttp作为网络请求框架？"></a><em>为什么我们要采用Okhttp作为网络请求框架？</em></h2><ul><li><p>在java 和Android中我们通常采用HttpClient和Httpurlconnection来实现网络请求；</p></li><li><p>现在曾经火爆的网络框架AsyncHttp和Volley （均基于HttpClient和Httpurlconnection）已然淡出我们的视野；</p></li><li><p>Okhttp直接使用Scoket遵循网络协议实现的网络框，这是和其他开源网络框架最大的区别；</p></li></ul><p><strong>Okhttp凭什么称霸Android网络框架？</strong></p><ul><li><p>域名解析，数据传输，连接复用，路由选择，代理选择，自动遍历可用服务器节点，缓存，自动重试，等等可控，可高度定制化网络请求。能够低成本实现复杂的业务需求；</p></li><li><p>OkHttp 和 Retrofit，Glide，Fresco 第三方库能很好的衔接，拥有良好的生态系统；</p></li><li><p>Android4.4的源码中可以看到HttpURLConnection已经替换成OkHttp实现；</p></li></ul><p>下面我们一起来探索OkHttp的部分原理和在项目实战中的花式运用：</p><h1 id="连接复用"><a href="#连接复用" class="headerlink" title="连接复用"></a><em>连接复用</em></h1><p>Okhttp和服务器建立连接后默认保持5分钟不断开，支持5个socket连接并发，也就是五分钟内客户端如果和已连接的服务器通信不需要重新三次握手连接（三次握手确保了服务端和客户端都具备可靠的通信能力，但握手过程耗时）。</p><p><strong>HTTP Keep-Alive</strong></p><p>在Http早期，每个http请求都要求打开一个tpc socket连接，并且使用一次之后就断开这个tcp连接。</p><p>使用keep-alive可以改善这种状态，即在一次TCP连接中可以持续发送多份数据而不会断开连接。通过使用keep-alive机制，可以减少tcp连接建立次数。</p><p>当使用Keep-Alive模式（又称持久连接、连接重用）时，Keep-Alive功能使客户端到服务器端的连接持续有效，当出现对服务器的后继请求时，Keep-Alive功能避免了建立或者重新建立连接。</p><p><img src="/0640.jpeg"><br>图片来源于网络</p><p>Okhttp中连接复用正是建立在Keep-alive基础之上实现的。</p><p>Okhttp连接复用实在建立连接过程中使用读写ConnectionPool 中的连接。</p><p><img src="/0.jpeg"></p><p>Okhttp在打开网络连接时会读写连接池中保存的可用连接，以达到复用。</p><p>假定客户端和服务器已建立连接，那么在有效期内客户端再次和服务端通信则不需要再次建立连接。</p><p>连接复用流程图：</p><p><img src="/00640.jpeg"><br>连接复用机制</p><h1 id="DNS"><a href="#DNS" class="headerlink" title="DNS"></a><em>DNS</em></h1><p>DNS（Domain Name System，域名系统），DNS 服务用于在网络请求时，将域名转为 IP 地址。能够使用户更方便的访问互联网，而不用去记住能够被机器直接读取的 IP 数串。</p><p><img src="/000640.jpeg"><br>image.png</p><p>传统的基于 UDP 协议的公共 DNS 服务极易发生 DNS 劫持，从而造成安全问题。</p><h2 id="Okhttp中的DNS"><a href="#Okhttp中的DNS" class="headerlink" title="Okhttp中的DNS"></a><em>Okhttp中的DNS</em></h2><p>Okhttp中使用Dns.lookup将域名解析成ip，默认使用系统解析dns。<br>如果一个域名绑定多个ip，即部署了多个服务节点。Okhttp在建立连接过程中会遍历所有ip，直至建立一个可用连接。<br>Okhttp在ConnectInterceptor调用StreamAllocation打开连接是时会遍历所有ip直接建立一个可靠的链接。</p><p>实现流程如下：</p><p><img src="/0000640.jpeg"><br>Okhttp DNS</p><h1 id="掌中通智能切换服务器"><a href="#掌中通智能切换服务器" class="headerlink" title="掌中通智能切换服务器"></a><em>掌中通智能切换服务器</em></h1><p>掌中通先使用的服务端中，有一个域名是带cdn的，有一个是没有的，那么我们如何做到在一个域名挂了自动切换到另一个节点呢？<br>回到上面的话题，访问业务服务需要同于域名访问，最终是通过服务器ip建立连接进而访问，那么我们回到Okhttp源码。<br>简单的说okhttp建立连接的时候会遍历dns.lookup 查找出来的ip直到建立可用连接位置。那么我们只需要在dns.lookup的时候，将带cdn和不带cdn的服务url解的域名解析出ip，合并成一个数组既可以以最低成本实现这个需求。</p><p>自定义 OKhttp Dns解析源码如下：</p><p><img src="/_0.jpeg"></p><h1 id="HttpDns"><a href="#HttpDns" class="headerlink" title="HttpDns"></a><em>HttpDns</em></h1><p>客户端解析DNS的过程，由客户端发出解析，容易被运营商等中间层劫持，存在劫持和低效的问题。<br>HttpDNS 使用HTTP协议进行域名解析，代替现有基于UDP的DNS协议，域名解析请求直接发送到HTTPDNS服务器，从而绕过运营商的Local DNS，能够避免Local DNS造成的域名劫持问题和调度不精准问题。</p><p><img src="/00000640.jpeg"><br>image.png</p><p><img src="/000.jpeg"></p><p>使用过程如下非常简单</p><p><img src="/00_0.jpeg"></p><h2 id="如何防止charles-fiddler抓包"><a href="#如何防止charles-fiddler抓包" class="headerlink" title="如何防止charles,fiddler抓包"></a><em>如何防止charles,fiddler抓包</em></h2><p>反编译，代理抓包，这些开发和测试中常用的技巧。charles在配置https证书后手机设置代理后，手机app中的https和http请求基本上属于裸奔。</p><p>那么我们怎么设置让我们的app没那么容易被抓包呢？<br>charles https抓包原理，charles伪装成服务器和手机建立http是连接，中间人攻击劫持，收到客户端发出消息后和目标服务器建立连接，作为中间人和服务器通信所以可以抓包。</p><p><img src="/000000640.jpeg"><br>image.png</p><p>okhttp 默认使用系统路由选择器，默认跟随系统设置，如果手机设置代理app请求也会走代理。<br>原理上很简单在创建Okhttpclient的时候设置一个自定义路由选择器，自定义的路由选择器设置成Proxy.NO_PROXY(不走代理)。</p><p><img src="/00000.jpeg"></p><h1 id="Token刷新"><a href="#Token刷新" class="headerlink" title="Token刷新"></a><em>Token刷新</em></h1><p>目前中通几乎所有的系统基本上都已对接安全系统,授权信息过期后可用刷新替换新的授权信息。</p><p>登录过程如下：</p><p><img src="/0000000640.jpeg"><br>使用拦截器对所有请求中添加授权相关信息，发起请求后，拦截返回报文状态码，如果是授权信息过期状态，则拦截请求，刷新授权信息，刷新成功后使用新授权信息重发请求。</p><p>请求流程流程图：</p><p><img src="/00000000640.jpeg"><br>刷新token拦截器</p><p><img src="/0000_0.jpeg"></p><h1 id="android源码中是如何使用OkHttp作为网络请求框架"><a href="#android源码中是如何使用OkHttp作为网络请求框架" class="headerlink" title="android源码中是如何使用OkHttp作为网络请求框架"></a><em>android源码中是如何使用OkHttp作为网络请求框架</em></h1><p>2013年Google发布Android 4.4 时,Httpurlconnection  底层采用了OkHttp实现，然而怎么实现的呢？</p><p>我们来看看这段非常普通创建http连接的代码</p><p><img src="/0000000.jpeg"></p><p>顺藤摸瓜打开URL源码（以下是精简版的部分源码）</p><p><img src="/000000_0.jpeg"></p><p>Android源码中使用的并非最新版本的Okhttp 所以，我们看这个分支源码：</p><p><img src="/000000000.jpeg"></p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;h2 id=&quot;OkHttp从原理到应用&quot;&gt;&lt;a href=&quot;#OkHttp从原理到应用&quot; class=&quot;headerlink&quot; title=&quot;OkHttp从原理到应用&quot;&gt;&lt;/a&gt;OkHttp从原理到应用&lt;/h2&gt;&lt;p&gt;&lt;em&gt;2018-12-14&lt;/em&gt; &lt;/p&gt;
+&lt;h2 i</summary>
+      
+    
+    
+    
+    
+    <category term="http" scheme="https://zto-express.github.io/tags/http/"/>
+    
+    <category term="tcp" scheme="https://zto-express.github.io/tags/tcp/"/>
+    
+    <category term="协议" scheme="https://zto-express.github.io/tags/%E5%8D%8F%E8%AE%AE/"/>
+    
+    <category term="scoket" scheme="https://zto-express.github.io/tags/scoket/"/>
+    
+    <category term="okhttp" scheme="https://zto-express.github.io/tags/okhttp/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>亿级场景下：Binlog在中通的应用</title>
+    <link href="https://zto-express.github.io/2018/08/31/binlog/"/>
+    <id>https://zto-express.github.io/2018/08/31/binlog/</id>
+    <published>2018-08-31T02:32:54.000Z</published>
+    <updated>2020-08-16T08:01:53.212Z</updated>
+    
+    <content type="html"><![CDATA[<p><strong>一、背     景</strong></p><p>Aries 是中通自研的一款MySQL增量日志实时分发平台，目前在中通内部已经实现大规模使用。</p><p>异构系统之间的数据同步是普遍存在的现象，如何保障同步的稳定性? 如何保证数据的数据一致性?  出现问题后如何回溯？源自对于业务上遇到的问题，我们开发设计了Aries。</p><p><strong>二、实现原理</strong></p><p>Aries实现了 Dump协议，把自己伪装成Slave，向Master拉取 BinaryLog，进行数据处理后发送到对应的消息中间件。</p><p><img src="0640.jpeg"></p><p>Aries是基于MySQL5.6 的 GTID实现。GTID是集群内全局唯一的，表示为server_uuid:transaction_id。</p><p>server_uuid表示当前实例的唯一标志，transaction_id表示当前事务的标志，一般情况下都是递增的。采用GTID是为了规避主备切换过程中向前回溯的问题，当一条事物产生时，只有对应的主实例的transaction_id 会增加，相关的备机是不会产生变化的，而使用binlog File + position 的方式主备都是需要发生变化的。</p><p><strong>三、整体架构</strong></p><p>Aries分为3大块，Aries Ops 负责任务的配置、初始化调度及监控配置等，Aries Node负责节点上的任务执行及管理，监控节点、任务执行、积压数量及告警。</p><p><img src="00640.jpeg"></p><p>市面上开源的binlog的解决方面并不多，阿里开源的Canal是应用比较广泛的。我们开发的Aries 和 Canal 在设计上有所不同， Canal是Server -&gt;Client的模式，我们是直接Server-&gt;MQ.Canal不支持GTID，Aries是基于GTID实现的。</p><p>Aries的监控告警模块更加丰富，提供多角度监控，监控执行机器的状态，任务的状态，任务的执行的TPS，任务的积压情况，单位时间窗口内是否发生的事务（通过这个反推业务是否发生异常）。Aries 通过GTID的实现能保障在VIP+MHA架构下的主备自动切换，过滤数据库大事务等。</p><p><strong>四、应用场景</strong></p><p>Aries在中通广泛应用在MySQL数据同步ElasticSearch、业务逻辑处理、更新缓存、数据归档、实时统计等几个方面。</p><ul><li><strong>MySQL数据同步ElasticSearch</strong></li></ul><p>中通的订单中心日均处理2000w的订单，分库分表存储到MySQL上，做Sharding解决了数据的存储及以分库分表键查询的性能，同时也带来了以其他纬度查询的全表扫描的痛点，解决这样的痛点我们引进了ElasticSearch。写db的时候也同步写一份es，这样解决了查询的问题。如何写db又写es呢？一般存在几种方法：</p><p><strong>1.</strong> 同步双写</p><p>在写db的时候同时写es，对于订单这种要求性能吞吐量较高的服务俨然是不合适的。双写需要考虑写db成功了写es失败如何处理、数据的补偿等一系列问题，增加了业务复杂度。</p><p><strong>2.</strong> 基于binlog异步写</p><p>业务只需关心自己的业务逻辑，不必考虑写es。Aries负责监听binlog 将变更的数据同步写到es中，各种复杂的处理逻辑都不需要侵入业务逻辑中，且保障数据的最终一致。</p><ul><li><strong>binlog 在业务处理中的应用</strong></li></ul><p>对于物流订单来说，用户在下单的时候填写了发件地址、收件地址，而在实际运输过程中我们需要知道这笔单子的收件网点、收件业务员、派件网点、派件业务员。这种场景我们是让用户先下单，后续通过监听binlog后续补全信息。</p><ul><li><strong>实时统计</strong></li></ul><p>在中通我们还通过监听binlog 统计不同渠道、合作商的实时的订单量，来做一些实时的统计服务。</p><ul><li><strong>数据归档</strong></li></ul><p>对于日均2000w+的订单来说，一段时间后MySQL会达到瓶颈，物流订单的数据生命周期一般在2周内，我们的做法是保留近6个月的活跃数据，历史数据归档进HBase.我们通过binlog做实时归档，清除历史数据时通过Aries 提供的剔除大事务屏蔽产生的binlog日志。</p><ul><li><strong>数据同步</strong></li></ul><p>订单数据最终都是要提供大数据部门进行挖掘分析的。数据如何同步给大数据部门呢？我们也是通过Aries 提供的binlog服务将数据实时流向大数据部门。</p><p><strong>五、总     结</strong></p><p>Aries Binlog在中通多个业务线上成功实践，有效的解决了异构系统之间的同步及业务处理的异步操作动作，降低了原本业务代码的复杂度。如果你遇到我们上面提到的一些场景，可以尝试使用binlog哦。如果你想了解Aries的实现细节，欢迎沟通。</p><p>文章来自： <strong>中通科技技术工具部</strong> ——部门致力于基础工具、能效工程设计开发工作，提供调研、计划、开发、测试、运维等各个环节上的工具支持，加速业务开发迭代及保障能力，目前主要聚焦在DevOps 、数据库运维平台、数据迁移及实时同步等相关领域工具开发。</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;&lt;strong&gt;一、背     景&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Aries 是中通自研的一款MySQL增量日志实时分发平台，目前在中通内部已经实现大规模使用。&lt;/p&gt;
+&lt;p&gt;异构系统之间的数据同步是普遍存在的现象，如何保障同步的稳定性? 如何保证数据的数据一致性?  出</summary>
+      
+    
+    
+    
+    
     <category term="Kafka" scheme="https://zto-express.github.io/tags/Kafka/"/>
+    
+    <category term="MQ" scheme="https://zto-express.github.io/tags/MQ/"/>
+    
+    <category term="消息队列" scheme="https://zto-express.github.io/tags/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/"/>
+    
+    <category term="日志" scheme="https://zto-express.github.io/tags/%E6%97%A5%E5%BF%97/"/>
+    
+    <category term="集群" scheme="https://zto-express.github.io/tags/%E9%9B%86%E7%BE%A4/"/>
     
   </entry>
   
