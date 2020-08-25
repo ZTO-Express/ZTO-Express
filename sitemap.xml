@@ -2,112 +2,112 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>https://zto-express.github.io/2018/08/31/binlog/</loc>
+    <loc>http://tech.izto.com/2018/08/31/binlog/</loc>
     
     <lastmod>2020-08-16</lastmod>
     
   </url>
   
   <url>
-    <loc>https://zto-express.github.io/2019/08/15/xcx/</loc>
+    <loc>http://tech.izto.com/2019/08/15/xcx/</loc>
     
     <lastmod>2020-08-16</lastmod>
     
   </url>
   
   <url>
-    <loc>https://zto-express.github.io/2019/10/15/elasticsearch/</loc>
+    <loc>http://tech.izto.com/2019/10/15/elasticsearch/</loc>
     
     <lastmod>2020-08-16</lastmod>
     
   </url>
   
   <url>
-    <loc>https://zto-express.github.io/2019/07/05/hbase/</loc>
+    <loc>http://tech.izto.com/2019/07/05/hbase/</loc>
     
     <lastmod>2020-08-16</lastmod>
     
   </url>
   
   <url>
-    <loc>https://zto-express.github.io/2018/12/14/http/</loc>
+    <loc>http://tech.izto.com/2018/12/14/http/</loc>
     
     <lastmod>2020-08-16</lastmod>
     
   </url>
   
   <url>
-    <loc>https://zto-express.github.io/2019/04/30/onedata/</loc>
+    <loc>http://tech.izto.com/2019/04/30/onedata/</loc>
     
     <lastmod>2020-08-16</lastmod>
     
   </url>
   
   <url>
-    <loc>https://zto-express.github.io/2018/12/21/spark/</loc>
+    <loc>http://tech.izto.com/2018/12/21/spark/</loc>
     
     <lastmod>2020-08-16</lastmod>
     
   </url>
   
   <url>
-    <loc>https://zto-express.github.io/2019/06/19/test1/</loc>
+    <loc>http://tech.izto.com/2019/06/19/test1/</loc>
     
     <lastmod>2020-08-16</lastmod>
     
   </url>
   
   <url>
-    <loc>https://zto-express.github.io/2019/07/19/test2/</loc>
+    <loc>http://tech.izto.com/2019/07/19/test2/</loc>
     
     <lastmod>2020-08-16</lastmod>
     
   </url>
   
   <url>
-    <loc>https://zto-express.github.io/2019/05/24/zgw/</loc>
+    <loc>http://tech.izto.com/2019/05/24/zgw/</loc>
     
     <lastmod>2020-08-16</lastmod>
     
   </url>
   
   <url>
-    <loc>https://zto-express.github.io/2020/08/15/kafka/</loc>
+    <loc>http://tech.izto.com/2020/08/15/kafka/</loc>
     
     <lastmod>2020-08-15</lastmod>
     
   </url>
   
   <url>
-    <loc>https://zto-express.github.io/2020/08/15/es/</loc>
+    <loc>http://tech.izto.com/2020/08/15/es/</loc>
     
     <lastmod>2020-08-15</lastmod>
     
   </url>
   
   <url>
-    <loc>https://zto-express.github.io/2020/08/15/zms/</loc>
+    <loc>http://tech.izto.com/2020/08/15/zms/</loc>
     
     <lastmod>2020-08-15</lastmod>
     
   </url>
   
   <url>
-    <loc>https://zto-express.github.io/404.html</loc>
+    <loc>http://tech.izto.com/404.html</loc>
     
     <lastmod>2020-08-14</lastmod>
     
   </url>
   
   <url>
-    <loc>https://zto-express.github.io/search/index.html</loc>
+    <loc>http://tech.izto.com/search/index.html</loc>
     
     <lastmod>2020-08-14</lastmod>
     
   </url>
   
   <url>
-    <loc>https://zto-express.github.io/about/index.html</loc>
+    <loc>http://tech.izto.com/about/index.html</loc>
     
     <lastmod>2020-08-14</lastmod>
     
@@ -115,7 +115,7 @@
   
 
   <url>
-    <loc>https://zto-express.github.io/</loc>
+    <loc>http://tech.izto.com/</loc>
     <lastmod>2020-08-25</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
@@ -123,259 +123,259 @@
 
   
   <url>
-    <loc>https://zto-express.github.io/tags/Kafka/</loc>
+    <loc>http://tech.izto.com/tags/Kafka/</loc>
     <lastmod>2020-08-25</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>https://zto-express.github.io/tags/MQ/</loc>
+    <loc>http://tech.izto.com/tags/MQ/</loc>
     <lastmod>2020-08-25</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>https://zto-express.github.io/tags/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/</loc>
+    <loc>http://tech.izto.com/tags/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/</loc>
     <lastmod>2020-08-25</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>https://zto-express.github.io/tags/%E6%97%A5%E5%BF%97/</loc>
+    <loc>http://tech.izto.com/tags/%E6%97%A5%E5%BF%97/</loc>
     <lastmod>2020-08-25</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>https://zto-express.github.io/tags/%E9%9B%86%E7%BE%A4/</loc>
+    <loc>http://tech.izto.com/tags/%E9%9B%86%E7%BE%A4/</loc>
     <lastmod>2020-08-25</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>https://zto-express.github.io/tags/es/</loc>
+    <loc>http://tech.izto.com/tags/es/</loc>
     <lastmod>2020-08-25</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>https://zto-express.github.io/tags/%E5%AE%9E%E8%B7%B5/</loc>
+    <loc>http://tech.izto.com/tags/%E5%AE%9E%E8%B7%B5/</loc>
     <lastmod>2020-08-25</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>https://zto-express.github.io/tags/kabana/</loc>
+    <loc>http://tech.izto.com/tags/kabana/</loc>
     <lastmod>2020-08-25</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>https://zto-express.github.io/tags/%E8%BF%90%E7%BB%B4/</loc>
+    <loc>http://tech.izto.com/tags/%E8%BF%90%E7%BB%B4/</loc>
     <lastmod>2020-08-25</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>https://zto-express.github.io/tags/ES/</loc>
+    <loc>http://tech.izto.com/tags/ES/</loc>
     <lastmod>2020-08-25</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>https://zto-express.github.io/tags/%E6%90%9C%E7%B4%A2/</loc>
+    <loc>http://tech.izto.com/tags/%E6%90%9C%E7%B4%A2/</loc>
     <lastmod>2020-08-25</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>https://zto-express.github.io/tags/%E5%B9%B3%E5%8F%B0/</loc>
+    <loc>http://tech.izto.com/tags/%E5%B9%B3%E5%8F%B0/</loc>
     <lastmod>2020-08-25</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>https://zto-express.github.io/tags/%E7%9B%91%E6%8E%A7/</loc>
+    <loc>http://tech.izto.com/tags/%E7%9B%91%E6%8E%A7/</loc>
     <lastmod>2020-08-25</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>https://zto-express.github.io/tags/http/</loc>
+    <loc>http://tech.izto.com/tags/http/</loc>
     <lastmod>2020-08-25</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>https://zto-express.github.io/tags/tcp/</loc>
+    <loc>http://tech.izto.com/tags/tcp/</loc>
     <lastmod>2020-08-25</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>https://zto-express.github.io/tags/%E5%8D%8F%E8%AE%AE/</loc>
+    <loc>http://tech.izto.com/tags/%E5%8D%8F%E8%AE%AE/</loc>
     <lastmod>2020-08-25</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>https://zto-express.github.io/tags/scoket/</loc>
+    <loc>http://tech.izto.com/tags/scoket/</loc>
     <lastmod>2020-08-25</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>https://zto-express.github.io/tags/okhttp/</loc>
+    <loc>http://tech.izto.com/tags/okhttp/</loc>
     <lastmod>2020-08-25</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>https://zto-express.github.io/tags/Spark/</loc>
+    <loc>http://tech.izto.com/tags/Spark/</loc>
     <lastmod>2020-08-25</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>https://zto-express.github.io/tags/HBase/</loc>
+    <loc>http://tech.izto.com/tags/HBase/</loc>
     <lastmod>2020-08-25</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>https://zto-express.github.io/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/</loc>
+    <loc>http://tech.izto.com/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/</loc>
     <lastmod>2020-08-25</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>https://zto-express.github.io/tags/%E7%99%BE%E4%BA%BF/</loc>
+    <loc>http://tech.izto.com/tags/%E7%99%BE%E4%BA%BF/</loc>
     <lastmod>2020-08-25</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>https://zto-express.github.io/tags/Test/</loc>
+    <loc>http://tech.izto.com/tags/Test/</loc>
     <lastmod>2020-08-25</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>https://zto-express.github.io/tags/%E5%8A%9F%E8%80%97/</loc>
+    <loc>http://tech.izto.com/tags/%E5%8A%9F%E8%80%97/</loc>
     <lastmod>2020-08-25</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>https://zto-express.github.io/tags/%E7%A7%BB%E5%8A%A8/</loc>
+    <loc>http://tech.izto.com/tags/%E7%A7%BB%E5%8A%A8/</loc>
     <lastmod>2020-08-25</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>https://zto-express.github.io/tags/App/</loc>
+    <loc>http://tech.izto.com/tags/App/</loc>
     <lastmod>2020-08-25</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>https://zto-express.github.io/tags/%E5%B0%8F%E7%A8%8B%E5%BA%8F/</loc>
+    <loc>http://tech.izto.com/tags/%E5%B0%8F%E7%A8%8B%E5%BA%8F/</loc>
     <lastmod>2020-08-25</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>https://zto-express.github.io/tags/%E8%B7%A8%E5%B9%B3%E5%8F%B0/</loc>
+    <loc>http://tech.izto.com/tags/%E8%B7%A8%E5%B9%B3%E5%8F%B0/</loc>
     <lastmod>2020-08-25</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>https://zto-express.github.io/tags/%E5%89%8D%E7%AB%AF/</loc>
+    <loc>http://tech.izto.com/tags/%E5%89%8D%E7%AB%AF/</loc>
     <lastmod>2020-08-25</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>https://zto-express.github.io/tags/API/</loc>
+    <loc>http://tech.izto.com/tags/API/</loc>
     <lastmod>2020-08-25</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>https://zto-express.github.io/tags/Gateway/</loc>
+    <loc>http://tech.izto.com/tags/Gateway/</loc>
     <lastmod>2020-08-25</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>https://zto-express.github.io/tags/%E7%BD%91%E5%85%B3/</loc>
+    <loc>http://tech.izto.com/tags/%E7%BD%91%E5%85%B3/</loc>
     <lastmod>2020-08-25</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>https://zto-express.github.io/tags/%E4%B8%AD%E9%80%9A/</loc>
+    <loc>http://tech.izto.com/tags/%E4%B8%AD%E9%80%9A/</loc>
     <lastmod>2020-08-25</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>https://zto-express.github.io/tags/%E6%B6%88%E6%81%AF/</loc>
+    <loc>http://tech.izto.com/tags/%E6%B6%88%E6%81%AF/</loc>
     <lastmod>2020-08-25</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>https://zto-express.github.io/tags/RocketMQ/</loc>
+    <loc>http://tech.izto.com/tags/RocketMQ/</loc>
     <lastmod>2020-08-25</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>https://zto-express.github.io/tags/onedata/</loc>
+    <loc>http://tech.izto.com/tags/onedata/</loc>
     <lastmod>2020-08-25</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>https://zto-express.github.io/tags/%E6%95%B0%E6%8D%AE%E4%B8%AD%E5%8F%B0/</loc>
+    <loc>http://tech.izto.com/tags/%E6%95%B0%E6%8D%AE%E4%B8%AD%E5%8F%B0/</loc>
     <lastmod>2020-08-25</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>

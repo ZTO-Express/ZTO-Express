@@ -3,11 +3,11 @@
   <title>科技中通</title>
   
   <subtitle>科技中通</subtitle>
-  <link href="https://zto-express.github.io/atom.xml" rel="self"/>
+  <link href="http://tech.izto.com/atom.xml" rel="self"/>
   
-  <link href="https://zto-express.github.io/"/>
+  <link href="http://tech.izto.com/"/>
   <updated>2020-08-15T03:37:03.132Z</updated>
-  <id>https://zto-express.github.io/</id>
+  <id>http://tech.izto.com/</id>
   
   <author>
     <name>[object Object]</name>
@@ -18,8 +18,8 @@
   
   <entry>
     <title>中通Elasticsearch集群运维实践（二）--监控告警</title>
-    <link href="https://zto-express.github.io/2020/08/15/es/"/>
-    <id>https://zto-express.github.io/2020/08/15/es/</id>
+    <link href="http://tech.izto.com/2020/08/15/es/"/>
+    <id>http://tech.izto.com/2020/08/15/es/</id>
     <published>2020-08-15T02:32:54.000Z</published>
     <updated>2020-08-15T03:37:03.132Z</updated>
     
@@ -34,24 +34,24 @@
     
     
     
-    <category term="集群" scheme="https://zto-express.github.io/tags/%E9%9B%86%E7%BE%A4/"/>
+    <category term="集群" scheme="http://tech.izto.com/tags/%E9%9B%86%E7%BE%A4/"/>
     
-    <category term="运维" scheme="https://zto-express.github.io/tags/%E8%BF%90%E7%BB%B4/"/>
+    <category term="运维" scheme="http://tech.izto.com/tags/%E8%BF%90%E7%BB%B4/"/>
     
-    <category term="ES" scheme="https://zto-express.github.io/tags/ES/"/>
+    <category term="ES" scheme="http://tech.izto.com/tags/ES/"/>
     
-    <category term="搜索" scheme="https://zto-express.github.io/tags/%E6%90%9C%E7%B4%A2/"/>
+    <category term="搜索" scheme="http://tech.izto.com/tags/%E6%90%9C%E7%B4%A2/"/>
     
-    <category term="平台" scheme="https://zto-express.github.io/tags/%E5%B9%B3%E5%8F%B0/"/>
+    <category term="平台" scheme="http://tech.izto.com/tags/%E5%B9%B3%E5%8F%B0/"/>
     
-    <category term="监控" scheme="https://zto-express.github.io/tags/%E7%9B%91%E6%8E%A7/"/>
+    <category term="监控" scheme="http://tech.izto.com/tags/%E7%9B%91%E6%8E%A7/"/>
     
   </entry>
   
   <entry>
     <title>Kafka 节点重启失败导致数据丢失的分析排查与解决之道</title>
-    <link href="https://zto-express.github.io/2020/08/15/kafka/"/>
-    <id>https://zto-express.github.io/2020/08/15/kafka/</id>
+    <link href="http://tech.izto.com/2020/08/15/kafka/"/>
+    <id>http://tech.izto.com/2020/08/15/kafka/</id>
     <published>2020-08-15T02:32:54.000Z</published>
     <updated>2020-08-15T09:19:06.250Z</updated>
     
@@ -66,22 +66,22 @@
     
     
     
-    <category term="Kafka" scheme="https://zto-express.github.io/tags/Kafka/"/>
+    <category term="Kafka" scheme="http://tech.izto.com/tags/Kafka/"/>
     
-    <category term="MQ" scheme="https://zto-express.github.io/tags/MQ/"/>
+    <category term="MQ" scheme="http://tech.izto.com/tags/MQ/"/>
     
-    <category term="消息队列" scheme="https://zto-express.github.io/tags/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/"/>
+    <category term="消息队列" scheme="http://tech.izto.com/tags/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/"/>
     
-    <category term="日志" scheme="https://zto-express.github.io/tags/%E6%97%A5%E5%BF%97/"/>
+    <category term="日志" scheme="http://tech.izto.com/tags/%E6%97%A5%E5%BF%97/"/>
     
-    <category term="集群" scheme="https://zto-express.github.io/tags/%E9%9B%86%E7%BE%A4/"/>
+    <category term="集群" scheme="http://tech.izto.com/tags/%E9%9B%86%E7%BE%A4/"/>
     
   </entry>
   
   <entry>
     <title>中通消息服务运维平台实践（已开源）</title>
-    <link href="https://zto-express.github.io/2020/08/15/zms/"/>
-    <id>https://zto-express.github.io/2020/08/15/zms/</id>
+    <link href="http://tech.izto.com/2020/08/15/zms/"/>
+    <id>http://tech.izto.com/2020/08/15/zms/</id>
     <published>2020-08-14T16:28:50.000Z</published>
     <updated>2020-08-15T03:36:53.906Z</updated>
     
@@ -96,22 +96,22 @@
     
     
     
-    <category term="Kafka" scheme="https://zto-express.github.io/tags/Kafka/"/>
+    <category term="Kafka" scheme="http://tech.izto.com/tags/Kafka/"/>
     
-    <category term="MQ" scheme="https://zto-express.github.io/tags/MQ/"/>
+    <category term="MQ" scheme="http://tech.izto.com/tags/MQ/"/>
     
-    <category term="中通" scheme="https://zto-express.github.io/tags/%E4%B8%AD%E9%80%9A/"/>
+    <category term="中通" scheme="http://tech.izto.com/tags/%E4%B8%AD%E9%80%9A/"/>
     
-    <category term="消息" scheme="https://zto-express.github.io/tags/%E6%B6%88%E6%81%AF/"/>
+    <category term="消息" scheme="http://tech.izto.com/tags/%E6%B6%88%E6%81%AF/"/>
     
-    <category term="RocketMQ" scheme="https://zto-express.github.io/tags/RocketMQ/"/>
+    <category term="RocketMQ" scheme="http://tech.izto.com/tags/RocketMQ/"/>
     
   </entry>
   
   <entry>
     <title>中通Elasticsearch集群运维实践</title>
-    <link href="https://zto-express.github.io/2019/10/15/elasticsearch/"/>
-    <id>https://zto-express.github.io/2019/10/15/elasticsearch/</id>
+    <link href="http://tech.izto.com/2019/10/15/elasticsearch/"/>
+    <id>http://tech.izto.com/2019/10/15/elasticsearch/</id>
     <published>2019-10-15T02:32:54.000Z</published>
     <updated>2020-08-16T08:05:55.452Z</updated>
     
@@ -126,22 +126,22 @@
     
     
     
-    <category term="集群" scheme="https://zto-express.github.io/tags/%E9%9B%86%E7%BE%A4/"/>
+    <category term="集群" scheme="http://tech.izto.com/tags/%E9%9B%86%E7%BE%A4/"/>
     
-    <category term="es" scheme="https://zto-express.github.io/tags/es/"/>
+    <category term="es" scheme="http://tech.izto.com/tags/es/"/>
     
-    <category term="实践" scheme="https://zto-express.github.io/tags/%E5%AE%9E%E8%B7%B5/"/>
+    <category term="实践" scheme="http://tech.izto.com/tags/%E5%AE%9E%E8%B7%B5/"/>
     
-    <category term="kabana" scheme="https://zto-express.github.io/tags/kabana/"/>
+    <category term="kabana" scheme="http://tech.izto.com/tags/kabana/"/>
     
-    <category term="运维" scheme="https://zto-express.github.io/tags/%E8%BF%90%E7%BB%B4/"/>
+    <category term="运维" scheme="http://tech.izto.com/tags/%E8%BF%90%E7%BB%B4/"/>
     
   </entry>
   
   <entry>
     <title>小程序之跨平台黑魔法</title>
-    <link href="https://zto-express.github.io/2019/08/15/xcx/"/>
-    <id>https://zto-express.github.io/2019/08/15/xcx/</id>
+    <link href="http://tech.izto.com/2019/08/15/xcx/"/>
+    <id>http://tech.izto.com/2019/08/15/xcx/</id>
     <published>2019-08-15T02:32:54.000Z</published>
     <updated>2020-08-16T08:06:07.423Z</updated>
     
@@ -158,18 +158,18 @@
     
     
     
-    <category term="小程序" scheme="https://zto-express.github.io/tags/%E5%B0%8F%E7%A8%8B%E5%BA%8F/"/>
+    <category term="小程序" scheme="http://tech.izto.com/tags/%E5%B0%8F%E7%A8%8B%E5%BA%8F/"/>
     
-    <category term="跨平台" scheme="https://zto-express.github.io/tags/%E8%B7%A8%E5%B9%B3%E5%8F%B0/"/>
+    <category term="跨平台" scheme="http://tech.izto.com/tags/%E8%B7%A8%E5%B9%B3%E5%8F%B0/"/>
     
-    <category term="前端" scheme="https://zto-express.github.io/tags/%E5%89%8D%E7%AB%AF/"/>
+    <category term="前端" scheme="http://tech.izto.com/tags/%E5%89%8D%E7%AB%AF/"/>
     
   </entry>
   
   <entry>
     <title>中通移动应用功耗测试最佳实践（二）</title>
-    <link href="https://zto-express.github.io/2019/07/19/test2/"/>
-    <id>https://zto-express.github.io/2019/07/19/test2/</id>
+    <link href="http://tech.izto.com/2019/07/19/test2/"/>
+    <id>http://tech.izto.com/2019/07/19/test2/</id>
     <published>2019-07-19T02:32:54.000Z</published>
     <updated>2020-08-16T07:49:34.109Z</updated>
     
@@ -186,20 +186,20 @@
     
     
     
-    <category term="Test" scheme="https://zto-express.github.io/tags/Test/"/>
+    <category term="Test" scheme="http://tech.izto.com/tags/Test/"/>
     
-    <category term="功耗" scheme="https://zto-express.github.io/tags/%E5%8A%9F%E8%80%97/"/>
+    <category term="功耗" scheme="http://tech.izto.com/tags/%E5%8A%9F%E8%80%97/"/>
     
-    <category term="移动" scheme="https://zto-express.github.io/tags/%E7%A7%BB%E5%8A%A8/"/>
+    <category term="移动" scheme="http://tech.izto.com/tags/%E7%A7%BB%E5%8A%A8/"/>
     
-    <category term="App" scheme="https://zto-express.github.io/tags/App/"/>
+    <category term="App" scheme="http://tech.izto.com/tags/App/"/>
     
   </entry>
   
   <entry>
     <title>玩转hbase百亿级数据扫描</title>
-    <link href="https://zto-express.github.io/2019/07/05/hbase/"/>
-    <id>https://zto-express.github.io/2019/07/05/hbase/</id>
+    <link href="http://tech.izto.com/2019/07/05/hbase/"/>
+    <id>http://tech.izto.com/2019/07/05/hbase/</id>
     <published>2019-07-05T02:32:54.000Z</published>
     <updated>2020-08-16T07:59:46.199Z</updated>
     
@@ -215,22 +215,22 @@
     
     
     
-    <category term="http" scheme="https://zto-express.github.io/tags/http/"/>
+    <category term="http" scheme="http://tech.izto.com/tags/http/"/>
     
-    <category term="tcp" scheme="https://zto-express.github.io/tags/tcp/"/>
+    <category term="tcp" scheme="http://tech.izto.com/tags/tcp/"/>
     
-    <category term="协议" scheme="https://zto-express.github.io/tags/%E5%8D%8F%E8%AE%AE/"/>
+    <category term="协议" scheme="http://tech.izto.com/tags/%E5%8D%8F%E8%AE%AE/"/>
     
-    <category term="scoket" scheme="https://zto-express.github.io/tags/scoket/"/>
+    <category term="scoket" scheme="http://tech.izto.com/tags/scoket/"/>
     
-    <category term="okhttp" scheme="https://zto-express.github.io/tags/okhttp/"/>
+    <category term="okhttp" scheme="http://tech.izto.com/tags/okhttp/"/>
     
   </entry>
   
   <entry>
     <title>中通移动应用功耗测试最佳实践（一）</title>
-    <link href="https://zto-express.github.io/2019/06/19/test1/"/>
-    <id>https://zto-express.github.io/2019/06/19/test1/</id>
+    <link href="http://tech.izto.com/2019/06/19/test1/"/>
+    <id>http://tech.izto.com/2019/06/19/test1/</id>
     <published>2019-06-19T02:32:54.000Z</published>
     <updated>2020-08-16T07:50:43.308Z</updated>
     
@@ -245,20 +245,20 @@
     
     
     
-    <category term="Test" scheme="https://zto-express.github.io/tags/Test/"/>
+    <category term="Test" scheme="http://tech.izto.com/tags/Test/"/>
     
-    <category term="功耗" scheme="https://zto-express.github.io/tags/%E5%8A%9F%E8%80%97/"/>
+    <category term="功耗" scheme="http://tech.izto.com/tags/%E5%8A%9F%E8%80%97/"/>
     
-    <category term="移动" scheme="https://zto-express.github.io/tags/%E7%A7%BB%E5%8A%A8/"/>
+    <category term="移动" scheme="http://tech.izto.com/tags/%E7%A7%BB%E5%8A%A8/"/>
     
-    <category term="App" scheme="https://zto-express.github.io/tags/App/"/>
+    <category term="App" scheme="http://tech.izto.com/tags/App/"/>
     
   </entry>
   
   <entry>
     <title>中通API网关实践</title>
-    <link href="https://zto-express.github.io/2019/05/24/zgw/"/>
-    <id>https://zto-express.github.io/2019/05/24/zgw/</id>
+    <link href="http://tech.izto.com/2019/05/24/zgw/"/>
+    <id>http://tech.izto.com/2019/05/24/zgw/</id>
     <published>2019-05-24T02:32:54.000Z</published>
     <updated>2020-08-16T07:41:44.954Z</updated>
     
@@ -274,18 +274,18 @@
     
     
     
-    <category term="API" scheme="https://zto-express.github.io/tags/API/"/>
+    <category term="API" scheme="http://tech.izto.com/tags/API/"/>
     
-    <category term="Gateway" scheme="https://zto-express.github.io/tags/Gateway/"/>
+    <category term="Gateway" scheme="http://tech.izto.com/tags/Gateway/"/>
     
-    <category term="网关" scheme="https://zto-express.github.io/tags/%E7%BD%91%E5%85%B3/"/>
+    <category term="网关" scheme="http://tech.izto.com/tags/%E7%BD%91%E5%85%B3/"/>
     
   </entry>
   
   <entry>
     <title>数据中台进行曲之OneData探索实践</title>
-    <link href="https://zto-express.github.io/2019/04/30/onedata/"/>
-    <id>https://zto-express.github.io/2019/04/30/onedata/</id>
+    <link href="http://tech.izto.com/2019/04/30/onedata/"/>
+    <id>http://tech.izto.com/2019/04/30/onedata/</id>
     <published>2019-04-30T02:32:54.000Z</published>
     <updated>2020-08-16T07:56:44.608Z</updated>
     
@@ -301,22 +301,22 @@
     
     
     
-    <category term="Spark" scheme="https://zto-express.github.io/tags/Spark/"/>
+    <category term="Spark" scheme="http://tech.izto.com/tags/Spark/"/>
     
-    <category term="HBase" scheme="https://zto-express.github.io/tags/HBase/"/>
+    <category term="HBase" scheme="http://tech.izto.com/tags/HBase/"/>
     
-    <category term="大数据" scheme="https://zto-express.github.io/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
+    <category term="大数据" scheme="http://tech.izto.com/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
     
-    <category term="onedata" scheme="https://zto-express.github.io/tags/onedata/"/>
+    <category term="onedata" scheme="http://tech.izto.com/tags/onedata/"/>
     
-    <category term="数据中台" scheme="https://zto-express.github.io/tags/%E6%95%B0%E6%8D%AE%E4%B8%AD%E5%8F%B0/"/>
+    <category term="数据中台" scheme="http://tech.izto.com/tags/%E6%95%B0%E6%8D%AE%E4%B8%AD%E5%8F%B0/"/>
     
   </entry>
   
   <entry>
     <title>百亿级别！Spark与HBase怎么玩？</title>
-    <link href="https://zto-express.github.io/2018/12/21/spark/"/>
-    <id>https://zto-express.github.io/2018/12/21/spark/</id>
+    <link href="http://tech.izto.com/2018/12/21/spark/"/>
+    <id>http://tech.izto.com/2018/12/21/spark/</id>
     <published>2018-12-21T02:32:54.000Z</published>
     <updated>2020-08-16T07:52:49.573Z</updated>
     
@@ -331,20 +331,20 @@
     
     
     
-    <category term="Spark" scheme="https://zto-express.github.io/tags/Spark/"/>
+    <category term="Spark" scheme="http://tech.izto.com/tags/Spark/"/>
     
-    <category term="HBase" scheme="https://zto-express.github.io/tags/HBase/"/>
+    <category term="HBase" scheme="http://tech.izto.com/tags/HBase/"/>
     
-    <category term="大数据" scheme="https://zto-express.github.io/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
+    <category term="大数据" scheme="http://tech.izto.com/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
     
-    <category term="百亿" scheme="https://zto-express.github.io/tags/%E7%99%BE%E4%BA%BF/"/>
+    <category term="百亿" scheme="http://tech.izto.com/tags/%E7%99%BE%E4%BA%BF/"/>
     
   </entry>
   
   <entry>
     <title>OkHttp从原理到应用</title>
-    <link href="https://zto-express.github.io/2018/12/14/http/"/>
-    <id>https://zto-express.github.io/2018/12/14/http/</id>
+    <link href="http://tech.izto.com/2018/12/14/http/"/>
+    <id>http://tech.izto.com/2018/12/14/http/</id>
     <published>2018-12-14T02:32:54.000Z</published>
     <updated>2020-08-16T07:58:01.916Z</updated>
     
@@ -360,22 +360,22 @@
     
     
     
-    <category term="http" scheme="https://zto-express.github.io/tags/http/"/>
+    <category term="http" scheme="http://tech.izto.com/tags/http/"/>
     
-    <category term="tcp" scheme="https://zto-express.github.io/tags/tcp/"/>
+    <category term="tcp" scheme="http://tech.izto.com/tags/tcp/"/>
     
-    <category term="协议" scheme="https://zto-express.github.io/tags/%E5%8D%8F%E8%AE%AE/"/>
+    <category term="协议" scheme="http://tech.izto.com/tags/%E5%8D%8F%E8%AE%AE/"/>
     
-    <category term="scoket" scheme="https://zto-express.github.io/tags/scoket/"/>
+    <category term="scoket" scheme="http://tech.izto.com/tags/scoket/"/>
     
-    <category term="okhttp" scheme="https://zto-express.github.io/tags/okhttp/"/>
+    <category term="okhttp" scheme="http://tech.izto.com/tags/okhttp/"/>
     
   </entry>
   
   <entry>
     <title>亿级场景下：Binlog在中通的应用</title>
-    <link href="https://zto-express.github.io/2018/08/31/binlog/"/>
-    <id>https://zto-express.github.io/2018/08/31/binlog/</id>
+    <link href="http://tech.izto.com/2018/08/31/binlog/"/>
+    <id>http://tech.izto.com/2018/08/31/binlog/</id>
     <published>2018-08-31T02:32:54.000Z</published>
     <updated>2020-08-16T08:25:45.595Z</updated>
     
@@ -392,15 +392,15 @@
     
     
     
-    <category term="Kafka" scheme="https://zto-express.github.io/tags/Kafka/"/>
+    <category term="Kafka" scheme="http://tech.izto.com/tags/Kafka/"/>
     
-    <category term="MQ" scheme="https://zto-express.github.io/tags/MQ/"/>
+    <category term="MQ" scheme="http://tech.izto.com/tags/MQ/"/>
     
-    <category term="消息队列" scheme="https://zto-express.github.io/tags/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/"/>
+    <category term="消息队列" scheme="http://tech.izto.com/tags/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/"/>
     
-    <category term="日志" scheme="https://zto-express.github.io/tags/%E6%97%A5%E5%BF%97/"/>
+    <category term="日志" scheme="http://tech.izto.com/tags/%E6%97%A5%E5%BF%97/"/>
     
-    <category term="集群" scheme="https://zto-express.github.io/tags/%E9%9B%86%E7%BE%A4/"/>
+    <category term="集群" scheme="http://tech.izto.com/tags/%E9%9B%86%E7%BE%A4/"/>
     
   </entry>
   
