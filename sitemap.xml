@@ -333,27 +333,6 @@
   </url>
   
   <url>
-    <loc>http://tech.izto.com/tags/API/</loc>
-    <lastmod>2020-08-25</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>http://tech.izto.com/tags/Gateway/</loc>
-    <lastmod>2020-08-25</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>http://tech.izto.com/tags/%E7%BD%91%E5%85%B3/</loc>
-    <lastmod>2020-08-25</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>http://tech.izto.com/tags/%E4%B8%AD%E9%80%9A/</loc>
     <lastmod>2020-08-25</lastmod>
     <changefreq>daily</changefreq>
@@ -369,6 +348,27 @@
   
   <url>
     <loc>http://tech.izto.com/tags/RocketMQ/</loc>
+    <lastmod>2020-08-25</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://tech.izto.com/tags/API/</loc>
+    <lastmod>2020-08-25</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://tech.izto.com/tags/Gateway/</loc>
+    <lastmod>2020-08-25</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://tech.izto.com/tags/%E7%BD%91%E5%85%B3/</loc>
     <lastmod>2020-08-25</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
